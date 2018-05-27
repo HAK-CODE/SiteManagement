@@ -1,0 +1,11 @@
+argh==0.26.2
+certifi==2018.4.16
+chardet==3.0.4
+colorama==0.3.9
+idna==2.6
+libtmux==0.8.0
+pathtools==0.1.2
+PyYAML==3.12
+requests==2.18.4
+urllib3==1.22
+watchdog==0.8.3
