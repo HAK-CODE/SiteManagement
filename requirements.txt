@@ -4,8 +4,13 @@ chardet==3.0.4
 colorama==0.3.9
 idna==2.6
 libtmux==0.8.0
+numpy==1.14.3
+pandas==0.23.0
 pathtools==0.1.2
+python-dateutil==2.7.3
+pytz==2018.4
 PyYAML==3.12
 requests==2.18.4
+six==1.11.0
 urllib3==1.22
 watchdog==0.8.3

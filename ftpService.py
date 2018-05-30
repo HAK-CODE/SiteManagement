@@ -23,10 +23,10 @@ class FTP:
                 return False
             finally:
                 session.quit()
-                #print('finished sending')
+                print('finished sending')
                 return True
         except:
-            #print('failed sending')
+            print('failed sending')
             traceback.print_exc()
             return False
 

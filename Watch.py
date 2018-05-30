@@ -14,6 +14,7 @@ import requests
 import sys
 import json
 import emailWatcher
+import datetime as dt
 
 '''
 An event handler that use to listen triggered events from FileSystemEvent
@@ -72,10 +73,10 @@ class Handler(FileSystemEventHandler):
             print("SIZE  : ", FILE.FILEBASIC()[4], "BYTES")
             print('---------------------------------------------------------------------------------', Fore.RESET)
             CHG_PATH = '\"' + event.src_path + '\"' if ' ' in event.src_path else event.src_path
-            self.data['email'].sendMailForInconsistentFiles()
+            #self.data['email'].sendMailForInconsistentFiles()
             # may call call instead of Popen
             self.data['fileReceived'] = CHG_PATH
-            #subprocess.Popen(['python3', self.data['pyfile'], str(self.data)])
+            subprocess.Popen(['python3', self.data['pyfile'], str(self.data)])
 
 
 '''
@@ -102,13 +103,13 @@ class Watcher:
             'pyfile': self.PYFILE,
             'db': self.DBINFO,
             'fileReceived': None,
-            'email': email
+            'email': 'No'
         }
 
     def run(self):
         try:
             event_handler = Handler()
-            emailService = requests.get('http://0.0.0.0:5000/api/emailapi/emailconfig?siteId='+self.SITEID)
+            emailService = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailconfig?siteId='+self.SITEID)
             emailConfig = json.loads(emailService.content)
             email = emailWatcher.EmailHandler(path=self.DIRECTORY,
                                               timeThreshold=emailConfig['timeDiffer'],
@@ -121,6 +122,7 @@ class Watcher:
             observer.start()
         except:
             observer.stop()
+            #requests.put('http://0.0.0.0:5000/api/emailapi/emailstatusupdate?siteId='+str(self.SITEID)+'&serviceStatus='+str(0))
             print("Observer Stopped Unexpectedly.")
             sys.exit(1)
         try:
@@ -130,4 +132,9 @@ class Watcher:
         except:
             observer.stop()
             print("Observer Stopped Manually.")
+            #requests.put('http://0.0.0.0:5000/api/emailapi/emailstatusupdate?siteId=' + str(self.SITEID) + '&serviceStatus=' + str(0))
+            #requests.put('http://0.0.0.0:5000/api/emailapi/sendmailtogroupid?siteId=' + str(self.SITEID) +
+            #             '&isMaintainance=' + str(1) +
+            #             '&emailType=' + str('INTERNAL_ISSUE') +
+            #             '&datetime=' + str(dt.datetime.now()))
         observer.join()

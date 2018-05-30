@@ -15,8 +15,8 @@ args = parser.parse_args()
 id = os.getpid()
 
 try:
-    siteConfig = requests.get('http://0.0.0.0:5000/api/siteserviceapi/siteconfig?siteId='+args.siteId)
-    tmuxConfig = requests.get('http://0.0.0.0:5000/api/siteserviceapi/tmuxconfig?siteId='+args.siteId)
+    siteConfig = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/siteconfig?siteId='+args.siteId)
+    tmuxConfig = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/tmuxconfig?siteId='+args.siteId)
 except:
     print('Connection to server failed')
     sys.exit(1)
@@ -37,6 +37,10 @@ if os.path.isfile(siteConfigData['siteInfo']['processPyFilePath']) is False:
     print('Processing file not exist.')
     sys.exit(1)
 
+if os.path.isdir(siteConfigData['siteInfo']['siteFilesStorage']) is False:
+    print('Storage dir not exist.')
+    sys.exit(1)
+
 siteFullConfig = dict()
 siteFullConfig['siteConfig'] = siteConfigData
 siteFullConfig['tmuxConfig'] = tmuxConfigData
@@ -50,5 +54,4 @@ except:
     print('unable to start main.py')
     sys.exit(1)
 
-print('calling')
-requests.get('http://0.0.0.0:5000/api/siteserviceapi/removesiteProcessId')
+#requests.get('http://0.0.0.0:5000/api/siteserviceapi/removesiteProcessId')
