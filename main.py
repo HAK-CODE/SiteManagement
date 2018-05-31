@@ -15,8 +15,10 @@ args = parser.parse_args()
 id = os.getpid()
 
 try:
-    siteConfig = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/siteconfig?siteId='+args.siteId)
-    tmuxConfig = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/tmuxconfig?siteId='+args.siteId)
+    siteConfig = requests.get('http://0.0.0.0:5000/api/siteserviceapi/siteconfig?siteId='+args.siteId)
+    tmuxConfig = requests.get('http://0.0.0.0:5000/api/siteserviceapi/tmuxconfig?siteId='+args.siteId)
+    #siteConfig = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/siteconfig?siteId='+args.siteId)
+    #tmuxConfig = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/tmuxconfig?siteId='+args.siteId)
 except:
     print('Connection to server failed')
     sys.exit(1)
@@ -29,8 +31,8 @@ if siteConfig.status_code != 200 or tmuxConfig.status_code != 200:
 siteConfigData = json.loads(siteConfig.content.decode('utf-8'))
 tmuxConfigData = json.loads(tmuxConfig.content.decode('utf-8'))
 
+
 if os.path.isdir(siteConfigData['siteInfo']['observingPath']) is False:
-    print(siteConfigData['siteInfo']['observingPath'])
     print('Observing path not exist.')
     sys.exit(1)
 

@@ -10,8 +10,6 @@ import time
 import datetime
 import os
 import shutil
-import ftplib
-import traceback
 import ntpath
 import ast
 from fileRelease import IOoperation
