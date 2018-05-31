@@ -42,7 +42,8 @@ class EmailHandler:
                                              '%a %b %d %H:%M:%S %Y')).total_seconds()) / 60) > self.timeThreshold and \
                 self.mailSentClients is False:
             print('sending mail to clients')
-            sendStatus = requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/sendmailtogroupid?siteId=' + str(self.siteId) +
+            sendStatus = requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/sendemailtogroupid'
+                                      '?siteId=' + str(self.siteId) +
                                       '&isMaintainance=' + str(0) +
                                       '&emailType=' + str('RECEIVING_STOP') +
                                       '&datetime=' + self.directoryCreationTime)
@@ -50,7 +51,6 @@ class EmailHandler:
             self.mailSentClients = True
             self.noReceiving = str(dt.now().strftime('%a %b %d %H:%M:%S %Y'))
         self.updateVar()
-        print('updating')
 
     def updateVar(self):
         currTime = dt.now()
