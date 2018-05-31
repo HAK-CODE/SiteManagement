@@ -30,6 +30,7 @@ siteConfigData = json.loads(siteConfig.content.decode('utf-8'))
 tmuxConfigData = json.loads(tmuxConfig.content.decode('utf-8'))
 
 if os.path.isdir(siteConfigData['siteInfo']['observingPath']) is False:
+    print(siteConfigData['siteInfo']['observingPath'])
     print('Observing path not exist.')
     sys.exit(1)
 
@@ -46,10 +47,10 @@ siteFullConfig['siteConfig'] = siteConfigData
 siteFullConfig['tmuxConfig'] = tmuxConfigData
 print(siteFullConfig['siteConfig'])
 try:
-	Watcher(DIRECTORY=siteConfigData['siteInfo']['observingPath'],
-       		 PYFILE=siteConfigData['siteInfo']['processPyFilePath'],
-        	 DBINFO=siteFullConfig,
-        	 SITEID=siteConfigData['siteInfo']['id']).run()
+    Watcher(DIRECTORY=siteConfigData['siteInfo']['observingPath'],
+            PYFILE=siteConfigData['siteInfo']['processPyFilePath'],
+            DBINFO=siteFullConfig,
+            SITEID=siteConfigData['siteInfo']['id']).run()
 except:
     print('unable to start main.py')
     sys.exit(1)

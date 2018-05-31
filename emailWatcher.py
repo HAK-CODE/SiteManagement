@@ -6,19 +6,18 @@ import sys
 
 
 class EmailHandler:
-    path = None
-    timeThreshold = None
-    siteId = None
-    checkForInconsistentFiles = False
-    ForInconsistentFiles = None
-    checkForTimeInconsistencies = False
-    ForTimeInconsistencies = None
-    mailSentClients = False
-    mailSentDevs = False
+    path = None                          # path to observe folder
+    timeThreshold = None                 # time to trigger email
+    siteId = None                        # site id
+    checkForInconsistentFiles = False    # Flag if the email is being triggered for inconsistent files
+    ForInconsistentFiles = None          # Time stamp when email was triggered for inconsistent files
+    checkForTimeInconsistencies = False  # Flag if the email is being triggered for time inconsistent files
+    ForTimeInconsistencies = None        # Time stamp when email was triggered time inconsistent files
+    mailSentClients = False              # is mail sent to clients
+    mailSentDevs = False                 # is mail sent to dih
     timeAhead = None
-    noReceiving = None
-    inconsistentFiles = None
-    directoryCreationTime = None
+    noReceiving = None                   # Time stamp when email was triggered for no receiving
+    directoryCreationTime = None         # Get the updates and modification of directory
 
     def __init__(self, path, timeThreshold, siteId, inconsistentFiles, inconsistenTime):
         self.path = path
@@ -28,7 +27,7 @@ class EmailHandler:
         self.checkForTimeInconsistencies = inconsistenTime
         self.directoryCreationTime = str(time.ctime(os.path.getctime(self.path)))
         try:
-            if requests.put('http://0.0.0.0:5000/api/emailapi/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
+            if requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
                 print('Email service successfully started')
             else:
                 print('failed to start')
@@ -43,10 +42,11 @@ class EmailHandler:
                                              '%a %b %d %H:%M:%S %Y')).total_seconds()) / 60) > self.timeThreshold and \
                 self.mailSentClients is False:
             print('sending mail to clients')
-            requests.put('http://0.0.0.0:5000/api/emailapi/sendmailtogroupid?siteId=' + str(self.siteId) +
-                         '&isMaintainance=' + str(0) +
-                         '&emailType=' + str('RECEIVING_STOP') +
-                         '&datetime=' + self.directoryCreationTime)
+            sendStatus = requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/sendmailtogroupid?siteId=' + str(self.siteId) +
+                                      '&isMaintainance=' + str(0) +
+                                      '&emailType=' + str('RECEIVING_STOP') +
+                                      '&datetime=' + self.directoryCreationTime)
+            print('Send status '+str(sendStatus.status_code))
             self.mailSentClients = True
             self.noReceiving = str(dt.now().strftime('%a %b %d %H:%M:%S %Y'))
         self.updateVar()
