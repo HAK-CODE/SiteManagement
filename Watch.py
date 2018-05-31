@@ -110,7 +110,7 @@ class Watcher:
         try:
             event_handler = Handler()
             emailService = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailconfig?siteId='+self.SITEID)
-            emailConfig = json.loads(emailService.content)
+            emailConfig = json.loads(emailService.content.decode('utf-8'))
             email = emailWatcher.EmailHandler(path=self.DIRECTORY,
                                               timeThreshold=emailConfig['timeDiffer'],
                                               siteId=self.SITEID,

@@ -26,8 +26,8 @@ if siteConfig.status_code != 200 or tmuxConfig.status_code != 200:
     print('Site configuration or Tmux configuration return with non 200 code.')
     sys.exit(1)
 
-siteConfigData = json.loads(siteConfig.content)
-tmuxConfigData = json.loads(tmuxConfig.content)
+siteConfigData = json.loads(siteConfig.content.decode('utf-8'))
+tmuxConfigData = json.loads(tmuxConfig.content.decode('utf-8'))
 
 if os.path.isdir(siteConfigData['siteInfo']['observingPath']) is False:
     print('Observing path not exist.')
@@ -44,12 +44,12 @@ if os.path.isdir(siteConfigData['siteInfo']['siteFilesStorage']) is False:
 siteFullConfig = dict()
 siteFullConfig['siteConfig'] = siteConfigData
 siteFullConfig['tmuxConfig'] = tmuxConfigData
-
+print(siteFullConfig['siteConfig'])
 try:
-    Watcher(DIRECTORY=siteConfigData['siteInfo']['observingPath'],
-            PYFILE=siteConfigData['siteInfo']['processPyFilePath'],
-            DBINFO=siteFullConfig,
-            SITEID=siteConfigData['siteInfo']['id']).run()
+	Watcher(DIRECTORY=siteConfigData['siteInfo']['observingPath'],
+       		 PYFILE=siteConfigData['siteInfo']['processPyFilePath'],
+        	 DBINFO=siteFullConfig,
+        	 SITEID=siteConfigData['siteInfo']['id']).run()
 except:
     print('unable to start main.py')
     sys.exit(1)
