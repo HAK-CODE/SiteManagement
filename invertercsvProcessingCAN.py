@@ -53,7 +53,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
             data = json.load(open(objectRecieved['fileReceived'], mode='r'))
             dictionary = {x: 0 for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
-
             for key, value in dictionary.items():
                 point = data['Body'][key]['Values']
                 for k, v in point.items():
@@ -68,27 +67,26 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             dictionary['Timestamp'] = data['Head']['Timestamp']
             df = pd.DataFrame.from_dict(json_normalize(dictionary), orient='columns')
             df.set_index('Timestamp', inplace=True)
-
+            print(dictionary)
+            print(df)
             CheckOldData()
 
-            for index, i in df.iterrows():
-                timeStamp = index.replace('T', ' ')
-                timeStamp = timeStamp.replace('+05:00', '')
-                unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
-                unixTimeStamp = unixTimeStamp * 1000
-                for j in range(len(df.columns)):
-                    try:
-                        predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][j]['tag'],
-                                                          value=str(df.iloc[i][j]),
-                                                          timestamp=unixTimeStamp,
-                                                          quality=3)
-                        a = predixConnection.timeSeries.send()
-                        print(a)
-                    except Exception:
-                        print("No internet")
-                        with open("DefaultDataStore/Default_Store.csv", "a") as file:
-                            file.write(objectRecieved['db']['siteConfig']['js'][j]['tag'] + ";" + str(df.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
-                            print(df.iloc[i, j], objectRecieved['db']['siteConfig']['js'][j]['tag'])
+            timeStamp = dictionary['Timestamp'].replace('T', ' ')
+            timeStamp = timeStamp.replace('+05:00', '')
+            unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
+            unixTimeStamp = unixTimeStamp * 1000
+            for k, v in dictionary.items():
+                try:
+                    predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
+                                                      value=str(v),
+                                                      timestamp=unixTimeStamp,
+                                                      quality=3)
+                    a = predixConnection.timeSeries.send()
+                    print(a)
+                except Exception:
+                    print("No internet")
+                    with open("DefaultDataStore/Default_Store.csv", "a") as file:
+                        file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
 
             if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                             headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
