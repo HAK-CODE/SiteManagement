@@ -21,12 +21,6 @@ ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
 ioCheck.setFile(objectRecieved['fileReceived'])
 
-
-ioCheck = IOoperation()
-objectRecieved = ast.literal_eval(sys.argv[1])
-ioCheck.setFile(objectRecieved['fileReceived'])
-
-
 if ioCheck.isFileRelease():
     if os.path.getsize(objectRecieved['fileReceived']) == 0:
         print('0 BYTE FILE.')
@@ -54,7 +48,9 @@ def CheckOldData():
 
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
-        if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['js']) != 0:
+        if os.path.splitext(objectRecieved['fileReceived'])[-1] and \
+                len(objectRecieved['db']['siteConfig']['js']) != 0 and \
+                os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
             data = json.load(open(objectRecieved['fileReceived'], mode='r'))
             dictionary = {x: 0 for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
 
@@ -99,9 +95,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 print('cache cleared')
             else:
                 print('cache cleared failed')
-        
-            ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
-                                    serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-            ftpObj.sendFTP()
+
+        ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
+                                serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+        ftpObj.sendFTP()
 
 os.remove(objectRecieved['fileReceived'])
