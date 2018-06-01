@@ -4,13 +4,11 @@ time  : 02:00 AM, 07/11/2017
 '''
 
 import json
-import pandas as pd
 import sys
 import time
 import os
 from Config import predixConnection
 import datetime
-from pandas.io.json import json_normalize
 from fileRelease import IOoperation
 import requests
 import ftpService
@@ -65,10 +63,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + objectRecieved['db']['siteConfig']['js'][key]['offset']
                     dictionary[key] += v
             dictionary['Timestamp'] = data['Head']['Timestamp']
-            df = pd.DataFrame.from_dict(json_normalize(dictionary), orient='columns')
-            df.set_index('Timestamp', inplace=True)
-            print(dictionary)
-            print(df)
             CheckOldData()
 
             timeStamp = dictionary['Timestamp'].replace('T', ' ')
@@ -78,6 +72,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             for k, v in dictionary.items():
                 if k != 'Timestamp':
                     try:
+                        print(k+" "+v)
                         predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
                                                           value=str(v),
                                                           timestamp=unixTimeStamp,
