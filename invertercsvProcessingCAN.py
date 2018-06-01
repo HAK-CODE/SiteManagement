@@ -70,7 +70,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
             unixTimeStamp = unixTimeStamp * 1000
             for k, v in dictionary.items():
-                if k != 'Timestamp':
+                if k is not 'Timestamp':
                     try:
                         print(k+" "+v)
                         predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
