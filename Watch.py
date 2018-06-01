@@ -98,26 +98,24 @@ class Watcher:
         self.DIRECTORY = DIRECTORY
         self.SITEID = SITEID
 
-    def getInfo(self, email=None):
+    def getInfo(self):
         return {
             'pyfile': self.PYFILE,
             'db': self.DBINFO,
-            'fileReceived': None,
-            'email': 'No'
+            'fileReceived': None
         }
 
     def run(self):
         try:
             event_handler = Handler()
-            emailService = requests.get('http://0.0.0.0:5000/api/emailapi/emailconfig?siteId=' + self.SITEID)
-            #emailService = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailconfig?siteId='+self.SITEID)
+            #emailService = requests.get('http://0.0.0.0:5000/api/emailapi/emailconfig?siteId=' + self.SITEID)
+            emailService = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailconfig?siteId='+self.SITEID)
             emailConfig = json.loads(emailService.content.decode('utf-8'))
             email = emailWatcher.EmailHandler(path=self.DIRECTORY,
                                               timeThreshold=emailConfig['timeDiffer'],
                                               siteId=self.SITEID,
                                               inconsistentFiles=emailConfig['checkInconsistentFiles'],
                                               inconsistenTime=emailConfig['checkTimeInconsistencies'])
-            event_handler.objectInfo(getInfo=self.getInfo(email=email))
             observer = Observer()
             observer.schedule(event_handler, self.DIRECTORY, recursive=True)
             observer.start()
@@ -128,8 +126,8 @@ class Watcher:
             sys.exit(1)
         try:
             while True:
-                email.update()
                 time.sleep(emailConfig['monitoringPing'])
+                email.update()
         except:
             observer.stop()
             print("Observer Stopped Manually.")

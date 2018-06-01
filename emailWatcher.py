@@ -27,7 +27,7 @@ class EmailHandler:
         self.checkForTimeInconsistencies = inconsistenTime
         self.directoryCreationTime = str(time.ctime(os.path.getctime(self.path)))
         try:
-            if requests.put('http://0.0.0.0:5000/api/emailapi/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
+            if requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
                 print('Email service successfully started')
             else:
                 print('failed to start')
@@ -38,23 +38,23 @@ class EmailHandler:
     def update(self):
         self.directoryCreationTime = str(time.ctime(os.path.getctime(self.path)))
         currTime = dt.now()
-        if int(round((currTime - dt.strptime(self.directoryCreationTime.rstrip(),
-                                             '%a %b %d %H:%M:%S %Y')).total_seconds()) / 60) > self.timeThreshold and \
+        if int(round((currTime - dt.strptime(self.directoryCreationTime.rstrip(),'%a %b %d %H:%M:%S %Y')).total_seconds()) / 60) > self.timeThreshold and \
                 self.mailSentClients is False:
             print('sending mail to clients')
+            """
             sendStatus = requests.put('http://0.0.0.0:5000/api/emailapi/sendmailtogroupid'
                                       '?siteId=' + str(self.siteId) +
                                       '&isMaintainance=' + str(0) +
                                       '&emailType=' + str('RECEIVING_STOP') +
                                       '&datetime=' + self.directoryCreationTime)
             """
-            PRODUCTION
+            #PRODUCTION
             sendStatus = requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/sendemailtogroupid'
                                       '?siteId=' + str(self.siteId) +
                                       '&isMaintainance=' + str(0) +
                                       '&emailType=' + str('RECEIVING_STOP') +
                                       '&datetime=' + self.directoryCreationTime)
-            """
+
             print('Send status '+str(sendStatus.status_code))
             self.mailSentClients = True
             self.noReceiving = str(dt.now().strftime('%a %b %d %H:%M:%S %Y'))

@@ -77,13 +77,12 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + \
                                      objectRecieved['db']['siteConfig']['csv'][keys]['offset']
             CheckOldData()
-            counter = 0
+            #counter = 0
             timeStamp = df_final.index.str.replace('/', '-')
             print(df_final)
 
             for i in range(len(df_final.index)):
-                unixTimeStamp = int(
-                    time.mktime(datetime.datetime.strptime(timeStamp[i], "%d-%m-%Y %H:%M:%S").timetuple()))
+                unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp[i], "%d-%m-%Y %H:%M:%S").timetuple()))
                 unixTimeStamp = unixTimeStamp * 1000
                 for j in df_final.columns:
                     try:
@@ -95,11 +94,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     except Exception:
                         print("No internet")
                         with open("DefaultDataStore/Default_Store.csv", "a") as file:
-                            file.write(
-                                objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(df_final.iloc[i, j]) + ";" + str(
-                                    unixTimeStamp * 1000) + "\n")
+                            file.write(objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                             print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
-                counter += 1
+                #counter += 1
             
             if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                             headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
