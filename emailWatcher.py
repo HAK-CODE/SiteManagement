@@ -49,7 +49,7 @@ class EmailHandler:
                                       '&datetime=' + self.directoryCreationTime)
             """
             #PRODUCTION
-            sendStatus = requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/sendemailtogroupid'
+            sendStatus = requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/sendmailtogroupid'
                                       '?siteId=' + str(self.siteId) +
                                       '&isMaintainance=' + str(0) +
                                       '&emailType=' + str('RECEIVING_STOP') +
