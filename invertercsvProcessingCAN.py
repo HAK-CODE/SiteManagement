@@ -76,17 +76,18 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
             unixTimeStamp = unixTimeStamp * 1000
             for k, v in dictionary.items():
-                try:
-                    predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
-                                                      value=str(v),
-                                                      timestamp=unixTimeStamp,
-                                                      quality=3)
-                    a = predixConnection.timeSeries.send()
-                    print(a)
-                except Exception:
-                    print("No internet")
-                    with open("DefaultDataStore/Default_Store.csv", "a") as file:
-                        file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
+                if k != 'Timestamp':
+                    try:
+                        predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
+                                                          value=str(v),
+                                                          timestamp=unixTimeStamp,
+                                                          quality=3)
+                        a = predixConnection.timeSeries.send()
+                        print(a)
+                    except Exception:
+                        print("No internet")
+                        with open("DefaultDataStore/Default_Store.csv", "a") as file:
+                            file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
 
             if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                             headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
