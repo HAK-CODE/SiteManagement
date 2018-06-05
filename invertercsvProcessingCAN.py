@@ -52,23 +52,38 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
                 dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
                 dictionary.__delitem__('PowerReal_P_Sum')
+                for key, value in dictionary.items():
+                    if key in data['Body']:
+                        dictionary[key] = 0
+                        for k, v in data['Body'][key]['Values'].items():
+                            if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
+                                if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
+                                    v = 0 if v < objectRecieved['db']['siteConfig']['js'][key]['min'] else v
+                                if objectRecieved['db']['siteConfig']['js'][key]['maxCheckApply']:
+                                    v = 0 if v > objectRecieved['db']['siteConfig']['js'][key]['max'] else v
+                            if objectRecieved['db']['siteConfig']['js'][key]['applyOperation']:
+                                v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + \
+                                    objectRecieved['db']['siteConfig']['js'][key]['offset']
+                            dictionary[key] += v
+
             elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
                 dictionary.__delitem__('DAY_ENERGY')
                 dictionary.__delitem__('TOTAL_ENERGY')
                 dictionary.__delitem__('PAC')
                 dictionary.__delitem__('YEAR_ENERGY')
-            for key, value in dictionary.items():
-                if key in data['Body']:
-                    dictionary[key] = 0
-                    for k, v in data['Body'][key]['Values'].items():
-                        if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
-                            if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
-                                v = 0 if v < objectRecieved['db']['siteConfig']['js'][key]['min'] else v
-                            if objectRecieved['db']['siteConfig']['js'][key]['maxCheckApply']:
-                                v = 0 if v > objectRecieved['db']['siteConfig']['js'][key]['max'] else v
-                        if objectRecieved['db']['siteConfig']['js'][key]['applyOperation']:
-                            v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + objectRecieved['db']['siteConfig']['js'][key]['offset']
-                        dictionary[key] += v
+                for key, value in dictionary.items():
+                    if key in data['Body']:
+                        dictionary[key] = 0
+                        for k, v in data['Body'][0][key].items():
+                            if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
+                                if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
+                                    v = 0 if v < objectRecieved['db']['siteConfig']['js'][key]['min'] else v
+                                if objectRecieved['db']['siteConfig']['js'][key]['maxCheckApply']:
+                                    v = 0 if v > objectRecieved['db']['siteConfig']['js'][key]['max'] else v
+                            if objectRecieved['db']['siteConfig']['js'][key]['applyOperation']:
+                                v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + objectRecieved['db']['siteConfig']['js'][key]['offset']
+                            dictionary[key] += v
+
             dictionary['Timestamp'] = data['Head']['Timestamp']
 
             CheckOldData()
