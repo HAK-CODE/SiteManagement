@@ -72,9 +72,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 dictionary.__delitem__('PAC')
                 dictionary.__delitem__('YEAR_ENERGY')
                 for key, value in dictionary.items():
-                    if key in data['Body']:
+                    if key in data['Body']['0']:
                         dictionary[key] = 0
-                        for k, v in data['Body'][0][key].items():
+                        for k, v in data['Body']['0'].items():
                             if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
                                 if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
                                     v = 0 if v < objectRecieved['db']['siteConfig']['js'][key]['min'] else v
