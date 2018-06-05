@@ -52,7 +52,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
                 dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
                 dictionary.__delitem__('PowerReal_P_Sum')
-            elif os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
+            elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
                 dictionary.__delitem__('DAY_ENERGY')
                 dictionary.__delitem__('TOTAL_ENERGY')
                 dictionary.__delitem__('PAC')
