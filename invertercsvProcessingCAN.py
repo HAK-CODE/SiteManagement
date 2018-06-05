@@ -98,15 +98,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 try:
                     for k, v in dictionary.items():
                         if v is not None:
-                            print(v)
-                            '''
                             predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
                                                               value=str(v),
                                                               timestamp=unixTimeStamp,
                                                               quality=3)
+                            print(objectRecieved['db']['siteConfig']['js'][k]['tag'])
                             a = predixConnection.timeSeries.send()
                             print(a)
-                            '''
                 except Exception:
                     print("No internet")
                     with open("DefaultDataStore/Default_Store.csv", "a") as file:
