@@ -74,15 +74,15 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 for key, value in dictionary.items():
                     if key in data['Body']['0']:
                         dictionary[key] = 0
-                        for k, v in data['Body']['0'].items():
-                            if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
-                                if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
-                                    v = 0 if v < objectRecieved['db']['siteConfig']['js'][key]['min'] else v
-                                if objectRecieved['db']['siteConfig']['js'][key]['maxCheckApply']:
-                                    v = 0 if v > objectRecieved['db']['siteConfig']['js'][key]['max'] else v
-                            if objectRecieved['db']['siteConfig']['js'][key]['applyOperation']:
-                                v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + objectRecieved['db']['siteConfig']['js'][key]['offset']
-                            dictionary[key] += v
+                        v = data['Body']['0'][key]
+                        if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
+                            if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
+                                v = 0 if v < objectRecieved['db']['siteConfig']['js'][key]['min'] else v
+                            if objectRecieved['db']['siteConfig']['js'][key]['maxCheckApply']:
+                                v = 0 if v > objectRecieved['db']['siteConfig']['js'][key]['max'] else v
+                        if objectRecieved['db']['siteConfig']['js'][key]['applyOperation']:
+                            v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + objectRecieved['db']['siteConfig']['js'][key]['offset']
+                        dictionary[key] += v
 
             dictionary['Timestamp'] = data['Head']['Timestamp']
 
@@ -97,12 +97,15 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             try:
                 for k, v in dictionary.items():
                     if v is not None:
+                        print(v)
+                        '''
                         predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
                                                           value=str(v),
                                                           timestamp=unixTimeStamp,
                                                           quality=3)
                         a = predixConnection.timeSeries.send()
                         print(a)
+                        '''
             except Exception:
                 print("No internet")
                 with open("DefaultDataStore/Default_Store.csv", "a") as file:
