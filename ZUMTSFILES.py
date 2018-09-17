@@ -30,7 +30,6 @@ del ioCheck
 if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
     shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
-
 def CheckOldData():
     try:
         with open("DefaultDataStore/Default_Store.csv", "r") as file:
@@ -44,7 +43,6 @@ def CheckOldData():
     except Exception:
         print("No Internet :(")
         print("Old Data Not Found! :)")
-
 
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
@@ -77,7 +75,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + \
                                      objectRecieved['db']['siteConfig']['csv'][keys]['offset']
             CheckOldData()
-            #counter = 0
+            counter = 0
             timeStamp = df_final.index.str.replace('/', '-')
             print(df_final)
 
@@ -96,7 +94,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         with open("DefaultDataStore/Default_Store.csv", "a") as file:
                             file.write(objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                             print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
-                #counter += 1
+                counter += 1
             
             if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                             headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
