@@ -20,7 +20,6 @@ ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
 ioCheck.setFile(objectRecieved['fileReceived'])
 
-
 if ioCheck.isFileRelease():
     if os.path.getsize(objectRecieved['fileReceived']) == 0:
         print('0 BYTE FILE.')
@@ -29,6 +28,7 @@ del ioCheck
 
 if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
     shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
+
 
 def CheckOldData():
     try:
@@ -44,10 +44,15 @@ def CheckOldData():
         print("No Internet :(")
         print("Old Data Not Found! :)")
 
+
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['csv']) != 0:
-            df = pd.read_csv(open(objectRecieved['fileReceived'], 'r'))
+            df = pd.read_csv(objectRecieved['fileReceived'],
+                             sep='\s*,\s*',
+                             header=0,
+                             encoding='ascii',
+                             engine='python')
             col = objectRecieved['db']['siteConfig']['csv']['csvCols']
             missing = []
             for i, j in enumerate(col):
@@ -68,9 +73,11 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             for keys in col:
                 if objectRecieved['db']['siteConfig']['csv'][keys]['applyChecks']:
                     if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                        df_final[keys].loc[df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
+                        df_final[keys].loc[
+                            df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
                     if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                        df_final[keys].loc[df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
+                        df_final[keys].loc[
+                            df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
                 if objectRecieved['db']['siteConfig']['csv'][keys]['applyOperation']:
                     df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + \
                                      objectRecieved['db']['siteConfig']['csv'][keys]['offset']
@@ -80,7 +87,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             print(df_final)
 
             for i in range(len(df_final.index)):
-                unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp[i], "%d-%m-%Y %H:%M:%S").timetuple()))
+                unixTimeStamp = int(
+                    time.mktime(datetime.datetime.strptime(timeStamp[i], "%d-%m-%Y %H:%M:%S").timetuple()))
                 unixTimeStamp = unixTimeStamp * 1000
                 for j in df_final.columns:
                     try:
@@ -92,10 +100,11 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     except Exception:
                         print("No internet")
                         with open("DefaultDataStore/Default_Store.csv", "a") as file:
-                            file.write(objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
+                            file.write(objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(
+                                df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                             print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
                 counter += 1
-            
+
             if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                             headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
                 print('cache cleared')
