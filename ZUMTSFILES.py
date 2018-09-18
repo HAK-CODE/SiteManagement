@@ -49,7 +49,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['csv']) != 0:
             print('Received is ', str(objectRecieved['fileReceived']))
-            if '.csv' in objectRecieved['fileReceived']:
+            if '.csv' in ntpath.basename(objectRecieved['fileReceived']):
                 df = pd.read_csv(objectRecieved['fileReceived'],
                                  sep='\s*,\s*',
                                  header=0,
@@ -75,11 +75,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 for keys in col:
                     if objectRecieved['db']['siteConfig']['csv'][keys]['applyChecks']:
                         if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                            df_final[keys].loc[
-                                df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
+                            df_final[keys].loc[df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
                         if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                            df_final[keys].loc[
-                                df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
+                            df_final[keys].loc[df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
                     if objectRecieved['db']['siteConfig']['csv'][keys]['applyOperation']:
                         df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + \
                                          objectRecieved['db']['siteConfig']['csv'][keys]['offset']
