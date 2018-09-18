@@ -5,7 +5,7 @@ import time
 class IOoperation:
     FILENAME = None
     FILESIZE = None
-    COUNT = 2
+    COUNT = 5
     TIMEOUT = 10
 
     def setFile(self, FILENAME):
