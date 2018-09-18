@@ -48,6 +48,7 @@ def CheckOldData():
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['csv']) != 0:
+            print('Received is ', str(objectRecieved['fileReceived']))
             if '.csv' in objectRecieved['fileReceived']:
                 df = pd.read_csv(objectRecieved['fileReceived'],
                                  sep='\s*,\s*',
