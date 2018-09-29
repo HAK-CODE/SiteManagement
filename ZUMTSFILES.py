@@ -60,7 +60,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 for i, j in enumerate(col):
                     if col[i] not in df.columns:
                         missing.append(col[i])
-                        del col[i]
+                col = list(filter(lambda x: x not in missing, col))
                 df_final = df[col].copy()
                 df_final.set_index('TIMESTAMP', inplace=True)
                 totalrows = df_final.shape[0]
@@ -68,8 +68,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 removedrows = totalrows - df_final.shape[0]
                 receiveTime = time.ctime(os.path.getctime(objectRecieved['fileReceived']))
                 filename = ntpath.basename(objectRecieved['fileReceived'])
-                df_csv = pd.DataFrame(
-                    [receiveTime, filename, totalrows, removedrows, missing if len(missing) != 0 else None]).transpose()
+                df_csv = pd.DataFrame([receiveTime, filename, totalrows, removedrows, missing if len(missing) != 0 else None]).transpose()
                 df_csv.set_index(0)
                 col.remove('TIMESTAMP')
                 for keys in col:
@@ -83,7 +82,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                          objectRecieved['db']['siteConfig']['csv'][keys]['offset']
                 CheckOldData()
                 counter = 0
-                timeStamp = df_final.index.str.replace('/', '-')
+                timeStamp = df_final.index.astype(str).str.replace('/', '-')
                 print(df_final)
 
                 for i in range(len(df_final.index)):
