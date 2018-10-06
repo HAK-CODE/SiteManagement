@@ -5,7 +5,7 @@ import time
 class IOoperation:
     FILENAME = None
     FILESIZE = None
-    COUNT = 15
+    COUNT = 5
     TIMEOUT = 30
 
     def setFile(self, FILENAME):
@@ -26,7 +26,6 @@ class IOoperation:
                 while True:
                     time.sleep(1)
                     if self.COUNT == 0:
-                        self.COUNT = 30
                         break
                     self.COUNT -= 1
                 if currSize == self.FILESIZE:
