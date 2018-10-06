@@ -14,6 +14,7 @@ import requests
 import ftpService
 import shutil
 import ast
+from colorama import Fore
 
 ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
@@ -108,7 +109,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             #print(objectRecieved['db']['siteConfig']['js'][k]['tag'])
                             #a = predixConnection.timeSeries.send()
                             #print(a)
-                    print(predixConnection.timeSeries.send())
+                    print(Fore.GREEN+predixConnection.timeSeries.send()+Fore.RESET)
                 except Exception:
                     print("No internet")
                     with open("DefaultDataStore/Default_Store.csv", "a") as file:
