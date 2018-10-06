@@ -106,8 +106,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                                               timestamp=unixTimeStamp,
                                                               quality=3)
                             print(objectRecieved['db']['siteConfig']['js'][k]['tag'])
-                            a = predixConnection.timeSeries.send()
-                            print(a)
+                            #a = predixConnection.timeSeries.send()
+                            #print(predixConnection.timeSeries.send())
+                    print(predixConnection.timeSeries.send())
                 except Exception:
                     print("No internet")
                     with open("DefaultDataStore/Default_Store.csv", "a") as file:
