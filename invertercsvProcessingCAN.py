@@ -106,7 +106,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                                               value=str(v),
                                                               timestamp=unixTimeStamp,
                                                               quality=3)
-                            #print(objectRecieved['db']['siteConfig']['js'][k]['tag'])
+                            print(Fore.YELLOW+objectRecieved['db']['siteConfig']['js'][k]['tag']+Fore.RESET)
                             #a = predixConnection.timeSeries.send()
                             #print(a)
                     print(Fore.GREEN+predixConnection.timeSeries.send()+Fore.RESET)
