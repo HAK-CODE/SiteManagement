@@ -6,7 +6,7 @@ class IOoperation:
     FILENAME = None
     FILESIZE = None
     COUNT = 15
-    TIMEOUT = 10
+    TIMEOUT = 30
 
     def setFile(self, FILENAME):
         if os.path.isfile(FILENAME):

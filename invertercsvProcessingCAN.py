@@ -51,8 +51,11 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 data = json.load(open(objectRecieved['fileReceived'], mode='r'))
                 dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
                 if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
-                    dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
-                    dictionary.__delitem__('PowerReal_P_Sum')
+                    try:
+                         dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
+                         dictionary.__delitem__('PowerReal_P_Sum')
+                    except:
+                         print("key not exist")
                     for key, value in dictionary.items():
                         if key in data['Body']:
                             dictionary[key] = 0
