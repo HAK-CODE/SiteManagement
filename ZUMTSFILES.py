@@ -94,7 +94,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                                               value=str(df_final.iloc[i][j]),
                                                               timestamp=unixTimeStamp,
                                                               quality=3)
-                            a = predixConnection.timeSeries.send()
+                            print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
                         except Exception:
                             print("No internet")
                             with open("DefaultDataStore/Default_Store.csv", "a") as file:
@@ -102,7 +102,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                     df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                                 print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
                     counter += 1
-                #print(predixConnection.timeSeries.send)
+                    print(predixConnection.timeSeries.send)
                 if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                                 headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
                     print('cache cleared')

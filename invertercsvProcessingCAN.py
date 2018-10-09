@@ -107,8 +107,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                                               timestamp=unixTimeStamp,
                                                               quality=3)
                             print(Fore.YELLOW+objectRecieved['db']['siteConfig']['js'][k]['tag']+Fore.RESET)
-                            #a = predixConnection.timeSeries.send()
-                            #print(a)
                     print(Fore.GREEN+predixConnection.timeSeries.send()+Fore.RESET)
                 except Exception:
                     print("No internet")
