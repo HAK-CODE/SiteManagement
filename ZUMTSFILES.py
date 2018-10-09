@@ -101,7 +101,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 file.write(objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(
                                     df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                                 print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
-                print(Fore.YELLOW + tagsShow + Fore.RESET)
+                print(Fore.YELLOW)
+                print(tagsShow)
+                print(Fore.RESET)
                 print(Fore.GREEN+predixConnection.timeSeries.send()+Fore.RESET)
                 if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                                 headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
