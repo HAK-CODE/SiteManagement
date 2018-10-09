@@ -84,7 +84,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 CheckOldData()
                 timeStamp = df_final.index.astype(str).str.replace('/', '-')
                 print(df_final)
-
+                tagsShow = []
                 for i in range(len(df_final.index)):
                     unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp[i], "%d-%m-%Y %H:%M:%S").timetuple()))
                     unixTimeStamp = unixTimeStamp * 1000
@@ -94,13 +94,14 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                                               value=str(df_final.iloc[i][j]),
                                                               timestamp=unixTimeStamp,
                                                               quality=3)
-                            print(Fore.YELLOW+objectRecieved['db']['siteConfig']['csv'][j]['tag']+Fore.RESET)
+                            tagsShow.append(objectRecieved['db']['siteConfig']['csv'][j]['tag'])
                         except Exception:
                             print("No internet")
                             with open("DefaultDataStore/Default_Store.csv", "a") as file:
                                 file.write(objectRecieved['db']['siteConfig']['csv'][j]['tag'] + ";" + str(
                                     df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                                 print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
+                print(Fore.YELLOW + tagsShow + Fore.RESET)
                 print(Fore.GREEN+predixConnection.timeSeries.send()+Fore.RESET)
                 if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
                                 headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'}).status_code == 200:
