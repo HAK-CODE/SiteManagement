@@ -102,7 +102,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                     df_final.iloc[i, j]) + ";" + str(unixTimeStamp * 1000) + "\n")
                                 print(df_final.iloc[i, j], objectRecieved['db']['siteConfig']['csv'][j]['tag'])
                 print(Fore.YELLOW)
-                print(tagsShow)
+                print(df_final.columns)
                 print(Fore.RESET)
                 print(Fore.GREEN+predixConnection.timeSeries.send()+Fore.RESET)
                 if requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/clearcache',
