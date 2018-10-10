@@ -62,7 +62,11 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 for i, j in enumerate(col):
                     if col[i] not in df.columns:
                         missing.append(col[i])
+                print("missing")
+                print(missing)
                 col = list(filter(lambda x: x not in missing, col))
+                print("filter col")
+                print(col)
                 df_final = df[col].copy()
                 df_final.set_index('TIMESTAMP', inplace=True)
                 #totalrows = df_final.shape[0]
