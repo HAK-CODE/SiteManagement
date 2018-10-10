@@ -64,13 +64,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 col = list(filter(lambda x: x not in missing, col))
                 df_final = df[col].copy()
                 df_final.set_index('TIMESTAMP', inplace=True)
-                totalrows = df_final.shape[0]
-                df_final.dropna(inplace=True)
-                removedrows = totalrows - df_final.shape[0]
+                #totalrows = df_final.shape[0]
+                #df_final.dropna(inplace=True)
+                #removedrows = totalrows - df_final.shape[0]
                 receiveTime = time.ctime(os.path.getctime(objectRecieved['fileReceived']))
                 filename = ntpath.basename(objectRecieved['fileReceived'])
-                df_csv = pd.DataFrame([receiveTime, filename, totalrows, removedrows, missing if len(missing) != 0 else None]).transpose()
-                df_csv.set_index(0)
+                #df_csv = pd.DataFrame([receiveTime, filename, totalrows, removedrows, missing if len(missing) != 0 else None]).transpose()
+                #df_csv.set_index(0)
                 col.remove('TIMESTAMP')
                 for keys in col:
                     if objectRecieved['db']['siteConfig']['csv'][keys]['applyChecks']:
