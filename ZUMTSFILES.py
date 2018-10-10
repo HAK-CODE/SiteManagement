@@ -57,6 +57,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  encoding='ascii',
                                  engine='python')
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
+                print(col)
                 missing = []
                 for i, j in enumerate(col):
                     if col[i] not in df.columns:
