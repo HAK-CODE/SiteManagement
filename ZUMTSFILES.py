@@ -54,7 +54,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 df = pd.read_csv(objectRecieved['fileReceived'],
                                  sep='\s*,\s*',
                                  header=0,
-                                 encoding='utf8',
                                  engine='python')
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
                 print(col)
