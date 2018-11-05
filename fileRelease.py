@@ -5,8 +5,8 @@ import time
 class IOoperation:
     FILENAME = None
     FILESIZE = None
-    COUNT = 5
-    TIMEOUT = 30
+    COUNT = 2
+    SLEEP = 1
 
     def setFile(self, FILENAME):
         if os.path.isfile(FILENAME):
@@ -14,22 +14,18 @@ class IOoperation:
             self.FILENAME = FILENAME
 
     def isFileRelease(self):
+        FLAG = False
         self.FILESIZE = os.path.getsize(self.FILENAME)
         while True:
-            if self.TIMEOUT == 0:
+            self.FILESIZE = os.path.getsize(self.FILENAME)
+            time.sleep(self.SLEEP)
+            if self.COUNT == 0:
                 break
             currSize = os.path.getsize(self.FILENAME)
             if currSize != self.FILESIZE:
-                print('size not same')
-                self.FILESIZE = currSize
+                FLAG = False
             else:
-                while True:
-                    time.sleep(1)
-                    if self.COUNT == 0:
-                        break
-                    self.COUNT -= 1
-                if currSize == self.FILESIZE:
-                    print('size same')
-                    break
-            self.TIMEOUT -= 1
+                FLAG = True
+            if FLAG is not False:
+                self.COUNT -= 1
         return True
