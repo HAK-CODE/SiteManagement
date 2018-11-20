@@ -109,6 +109,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         dictionary.__delitem__('PowerReal_P_Sum')
                     except:
                         print("key not exist")
+                    print(dictionary)
                     for key, value in dictionary.items():
                         if key in data['Body']['1']:
                             dictionary[key] = 0
