@@ -99,7 +99,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] += v
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
-                    print("in sensor")
                     try:
                         dictionary.__delitem__('DAY_ENERGY')
                         dictionary.__delitem__('TOTAL_ENERGY')
@@ -109,7 +108,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         dictionary.__delitem__('PowerReal_P_Sum')
                     except:
                         print("key not exist")
-                    print(dictionary)
                     for key, value in dictionary.items():
                         if key in data['Body']['1']:
                             dictionary[key] = 0
@@ -124,7 +122,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                         v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + \
                                             objectRecieved['db']['siteConfig']['js'][key]['offset']
                                     dictionary[key] += v
-                            print(dictionary)
 
                 dictionary['Timestamp'] = data['Head']['Timestamp']
                 CheckOldData()
