@@ -7,7 +7,7 @@ import json
 import sys
 import time
 import os
-#from Config import predixConnection
+from Config import predixConnection
 import datetime
 from fileRelease import IOoperation
 import requests
