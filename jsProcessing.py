@@ -99,8 +99,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] += v
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
-                    data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
-                    dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
                     try:
                         dictionary.__delitem__('DAY_ENERGY')
                         dictionary.__delitem__('TOTAL_ENERGY')
@@ -124,6 +122,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                         v = (v / objectRecieved['db']['siteConfig']['js'][key]['multiplier']) + \
                                             objectRecieved['db']['siteConfig']['js'][key]['offset']
                                     dictionary[key] += v
+                            print(dictionary)
 
                 dictionary['Timestamp'] = data['Head']['Timestamp']
                 CheckOldData()
