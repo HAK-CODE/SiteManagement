@@ -7,7 +7,7 @@ import json
 import sys
 import time
 import os
-from Config import predixConnection
+#from Config import predixConnection
 import datetime
 from fileRelease import IOoperation
 import requests
@@ -23,6 +23,9 @@ ioCheck.setFile(objectRecieved['fileReceived'])
 if ioCheck.isFileRelease():
     if os.path.getsize(objectRecieved['fileReceived']) == 0:
         print('0 BYTE FILE.')
+        ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
+                                serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+        ftpObj.sendFTP()
         sys.exit(0)
 del ioCheck
 
@@ -48,9 +51,6 @@ def CheckOldData():
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['js']) != 0:
-            #if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or \
-            #        os.path.basename(objectRecieved['fileReceived']).startswith('METER') or \
-            #        os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
             if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
                 data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
                 dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
@@ -75,10 +75,15 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 dictionary[key] += v
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
-                    dictionary.__delitem__('DAY_ENERGY')
-                    dictionary.__delitem__('TOTAL_ENERGY')
-                    dictionary.__delitem__('PAC')
-                    dictionary.__delitem__('YEAR_ENERGY')
+                    data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
+                    dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
+                    try:
+                        dictionary.__delitem__('DAY_ENERGY')
+                        dictionary.__delitem__('TOTAL_ENERGY')
+                        dictionary.__delitem__('PAC')
+                        dictionary.__delitem__('YEAR_ENERGY')
+                    except:
+                        print("key not exist")
                     for key, value in dictionary.items():
                         if key in data['Body']['0']:
                             dictionary[key] = 0
@@ -94,9 +99,17 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] += v
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
-                    #data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
-                    #dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
-
+                    data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
+                    dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
+                    try:
+                        dictionary.__delitem__('DAY_ENERGY')
+                        dictionary.__delitem__('TOTAL_ENERGY')
+                        dictionary.__delitem__('PAC')
+                        dictionary.__delitem__('YEAR_ENERGY')
+                        dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
+                        dictionary.__delitem__('PowerReal_P_Sum')
+                    except:
+                        print("key not exist")
                     for key, value in dictionary.items():
                         if key in data['Body']['1']:
                             dictionary[key] = 0
