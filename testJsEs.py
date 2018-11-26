@@ -122,6 +122,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
                 dictionary['Timestamp'] = data['Head']['Timestamp']
                 buffDict = dictionary.copy()
+                del dictionary['type']
                 buffDict['@timestamp'] = buffDict['Timestamp']
                 del buffDict['Timestamp']
                 type = buffDict['type']
