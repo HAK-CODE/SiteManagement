@@ -68,12 +68,12 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
                 if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
                     try:
-                        dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
-                        dictionary.__delitem__('PowerReal_P_Sum')
                         dictionary.__delitem__('0')
                         dictionary.__delitem__('1')
                         dictionary.__delitem__('2')
                         dictionary.__delitem__('4')
+                        dictionary.__delitem__('EnergyReal_WAC_Sum_Consumed')
+                        dictionary.__delitem__('PowerReal_P_Sum')
                     except:
                         print("key not exist")
                     for key, value in dictionary.items():
