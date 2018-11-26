@@ -81,6 +81,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] = 0
                             for k, v in data['Body'][key]['Values'].items():
                                 dictionary[key] += dictionaryBuilder(key, v)
+                    dictionary['type'] = "inverter"
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
                     try:
@@ -99,6 +100,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] = 0
                             v = data['Body']['0'][key]
                             dictionary[key] += dictionaryBuilder(key, v)
+                    dictionary['type'] = "sensor"
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
                     try:
@@ -116,14 +118,17 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             for k, v in data['Body']['1'][key].items():
                                 if 'Value' in k:
                                     dictionary[key] += dictionaryBuilder(key, v)
+                    dictionary['type'] = "meter"
 
                 dictionary['Timestamp'] = data['Head']['Timestamp']
                 buffDict = dictionary.copy()
                 buffDict['@timestamp'] = buffDict['Timestamp']
                 del buffDict['Timestamp']
+                type = buffDict['type']
+                del buffDict['type']
                 index["index"]["_id"] = str(buffDict['@timestamp'])
                 buffer += str(json.dumps(index)+"\n")
-                buffer += str(json.dumps({"@timestamp": buffDict["@timestamp"], "type":"inverter", "data":buffDict})+"\n")
+                buffer += str(json.dumps({"@timestamp": buffDict["@timestamp"], "type":type, "data":buffDict})+"\n")
                 a = requests.put(url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/rb/_doc/_bulk',
                              headers={"content-type": "application/json"},
                              data=buffer)
