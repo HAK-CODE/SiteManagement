@@ -61,7 +61,8 @@ def CheckOldData():
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['js']) != 0:
-            if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'): """or os.path.basename(objectRecieved['fileReceived']).startswith('METER') or os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR')"""
+            if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
+                #or os.path.basename(objectRecieved['fileReceived']).startswith('METER') or os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR')
                 index = {"index": {"_index": "alucan", "_id": None}}
                 buffer = ""
                 data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
