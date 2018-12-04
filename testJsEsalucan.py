@@ -83,7 +83,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 dictionary[key] += dictionaryBuilder(key, v)
                     dictionary['type'] = "inverter"
 
-                elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
+                elif os.path.basename(objectRecieved['fileReceived']).startswith('AAAAMETER'):
                     try:
                         dictionary.__delitem__('DAY_ENERGY')
                         dictionary.__delitem__('TOTAL_ENERGY')
@@ -102,7 +102,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] += dictionaryBuilder(key, v)
                     dictionary['type'] = "sensor"
 
-                elif os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
+                elif os.path.basename(objectRecieved['fileReceived']).startswith('AAASENSOR'):
                     try:
                         dictionary.__delitem__('DAY_ENERGY')
                         dictionary.__delitem__('TOTAL_ENERGY')
