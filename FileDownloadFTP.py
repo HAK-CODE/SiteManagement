@@ -8,7 +8,7 @@ while True:
     user = "reonenergy"
     password = "@Reonenergy92"
     source = "/ALUCAN/ZL3"
-    destination = "/home/reon/ftp/files/ALUCAN"
+    destination = "/home/reon/ftp/files/TEST_JSON"
     interval = 0.05
 
     ftp = ftplib.FTP_TLS(host='ftpreonenergy.qosenergy.com',
