@@ -202,7 +202,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 unixTimeStamp = unixTimeStamp * 1000
                 dictionary.__delitem__('Timestamp')
                 print("match "+str(typeofdata in ['inverter', 'sensor']))
-                if typeofdata in ['inverter', 'sensor']:
+                if typeofdata in ['data', 'sensor', 'meter']:
                     try:
                         for k, v in dictionary.items():
                             if v is not None:
