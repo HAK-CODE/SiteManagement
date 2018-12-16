@@ -183,22 +183,17 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 index["index"]["_id"] = str(buffDict['@timestamp'])
                 buffer += str(json.dumps(index) + "\n")
                 buffer += str(json.dumps({"@timestamp": buffDict["@timestamp"], typeofdata: buffDict}) + "\n")
-                isCreated = requests.get(
-                    url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/' + str(
-                        buffDict['@timestamp']).replace("+", "%2B"))
+                isCreated = requests.get(url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/' + str(buffDict['@timestamp']).replace("+", "%2B"))
                 print("is created " + str(isCreated.status_code))
                 if isCreated.status_code == 200:
-                    update = requests.post(
-                        url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/' + str(
-                            buffDict['@timestamp']).replace("+", "%2B") + "/_update",
-                        headers={"content-type": "application/json"},
-                        json={"doc": {typeofdata: buffDict}})
+                    update = requests.post(url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/' + str(buffDict['@timestamp']).replace("+", "%2B") + "/_update",
+                                           headers={"content-type": "application/json"},
+                                           json={"doc": {typeofdata: buffDict}})
                     print(update.content)
                 else:
-                    a = requests.put(
-                        url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/_bulk',
-                        headers={"content-type": "application/json"},
-                        data=buffer)
+                    a = requests.put(url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/_bulk',
+                                     headers={"content-type": "application/json"},
+                                     data=buffer)
                     print(a.status_code)
                 CheckOldData()
                 timeStamp = dictionary['Timestamp'].replace('T', ' ')
@@ -206,6 +201,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
                 unixTimeStamp = unixTimeStamp * 1000
                 dictionary.__delitem__('Timestamp')
+                print("match "+str(typeofdata in ['inverter', 'sensor']))
                 if typeofdata in ['inverter', 'sensor']:
                     try:
                         for k, v in dictionary.items():
