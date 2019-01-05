@@ -48,13 +48,13 @@ siteFullConfig = dict()
 siteFullConfig['siteConfig'] = siteConfigData
 siteFullConfig['tmuxConfig'] = tmuxConfigData
 print(siteFullConfig['siteConfig'])
-#try:
-Watcher(DIRECTORY=siteConfigData['siteInfo']['observingPath'],
-        PYFILE=siteConfigData['siteInfo']['processPyFilePath'],
-        DBINFO=siteFullConfig,
-        SITEID=siteConfigData['siteInfo']['id']).run()
-#except:
-#    print('unable to start main.py')
-#    sys.exit(1)
+try:
+    Watcher(DIRECTORY=siteConfigData['siteInfo']['observingPath'],
+            PYFILE=siteConfigData['siteInfo']['processPyFilePath'],
+            DBINFO=siteFullConfig,
+            SITEID=siteConfigData['siteInfo']['id']).run()
+except:
+    print('unable to start main.py')
+    sys.exit(1)
 
 #requests.get('http://0.0.0.0:5000/api/siteserviceapi/removesiteProcessId')
