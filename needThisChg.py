@@ -7,7 +7,7 @@ import json
 import sys
 import time
 import os
-#from Config import predixConnection
+from Config import predixConnection
 import datetime
 from fileRelease import IOoperation
 import requests
@@ -115,9 +115,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                              headers={"content-type": "application/json"},
                              data=buffer)
                 print(a.status_code)
-                CheckOldData()
                 """
-        """
+                CheckOldData()
+
                 timeStamp = dictionary['Timestamp'].replace('T', ' ')
                 timeStamp = timeStamp.replace('+05:00', '')
                 unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
@@ -147,5 +147,4 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
                                 serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         ftpObj.sendFTP()
-        """
 os.remove(objectRecieved['fileReceived'])

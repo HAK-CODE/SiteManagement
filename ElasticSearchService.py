@@ -49,11 +49,13 @@ class ElasticSearchService:
         extractdata = dateutil.parser.parse(date).date()
         indice = self.index+str("-")+str(extractdata.year)+"."+str(extractdata.month)+"."+str(extractdata.day)
         isCreated = requests.get(url=self.url+"/"+indice)
+        print("indice patern is "+indice)
         if isCreated.status_code != 200:
             createdIndice = requests.put(url=self.url+"/"+indice)
             if createdIndice.status_code == 200:
                 print("indice created "+indice)
                 return [True, indice]
+            print(createdIndice.content)
             return False
         elif isCreated.status_code == 200:
             return [True, indice]
