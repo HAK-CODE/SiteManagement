@@ -47,7 +47,7 @@ class ElasticSearchService:
 
     def indiceController(self, date):
         extractdata = dateutil.parser.parse(date).date()
-        indice = self.index+str("-")+str(extractdata.year)+"."+str(extractdata.month)+"."+str(extractdata.day)
+        indice = str(self.index).lower()+str("-")+str(extractdata.year)+"."+str(extractdata.month)+"."+str(extractdata.day)
         isCreated = requests.get(url=self.url+"/"+indice)
         print("indice patern is "+indice)
         if isCreated.status_code != 200:
