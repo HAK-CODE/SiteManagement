@@ -27,8 +27,8 @@ class EmailHandler:
         self.checkForTimeInconsistencies = inconsistenTime
         self.directoryCreationTime = str(time.ctime(os.path.getctime(self.path)))
         try:
-            #if requests.put('http://0.0.0.0:5000/api/emailapi/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
-            if requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
+            if requests.put('http://0.0.0.0:5000/api/emailapi/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
+            #if requests.put('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/emailstatusupdate?siteId=' + self.siteId + '&serviceStatus=1').status_code == 200:
                 print('Email service successfully started')
             else:
                 print('failed to start')
