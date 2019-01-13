@@ -31,7 +31,7 @@ class ElasticSearchService:
                     print("data already exist with id")
                     updateStatus = requests.post(url=self.url+"/"+indiceStatus[1]+"/_doc/"+data['@timestamp'].replace("+", "%2B")+"/_update",
                                                  headers={"content-type": "application/json"},
-                                                 json={"doc": {"data": data['data']}})
+                                                 json={"doc": {data['type']: data['data']}})
                     print(updateStatus.content)
                 else:
                     newData = requests.put(url=self.url + "/" + self.index + "/_doc/_bulk",
