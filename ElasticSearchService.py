@@ -57,8 +57,7 @@ class ElasticSearchService:
             if createdIndice.status_code == 200:
                 print("indice created "+indice)
                 return [True, indice]
-            print(createdIndice.content)
-            return False
+            return [True, indice]
         elif isCreated.status_code == 200:
             return [True, indice]
         return False
