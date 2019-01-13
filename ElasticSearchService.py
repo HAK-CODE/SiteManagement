@@ -23,6 +23,8 @@ class ElasticSearchService:
                 self.indexPattern['index']['_index'] = indiceStatus[1]
                 self.indexPattern['index']['_id'] = data['@timestamp']
                 print(self.indexPattern)
+                typeData = data['type']
+                del data['type']
                 buffer += str(json.dumps(self.indexPattern) + "\n")
                 buffer += str(json.dumps(data) + '\n')
 
@@ -31,7 +33,7 @@ class ElasticSearchService:
                     print("data already exist with id")
                     updateStatus = requests.post(url=self.url+"/"+indiceStatus[1]+"/_doc/"+data['@timestamp'].replace("+", "%2B")+"/_update",
                                                  headers={"content-type": "application/json"},
-                                                 json={"doc": {data['type']: data[data['type']]}})
+                                                 json={"doc": {typeData: data[typeData]}})
                     print(updateStatus.content)
                 else:
                     newData = requests.put(url=self.url + "/" + self.index + "/_doc/_bulk",
