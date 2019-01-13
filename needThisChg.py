@@ -84,7 +84,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             dictionary[key] = 0
                             v = data['Body']['0'][key]
                             dictionary[key] += dictionaryBuilder(key, v)
-                    dictionary['type'] = "sensor"
+                    dictionary['type'] = "meter"
 
                 elif os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
                     for key, value in dictionary.items():
@@ -93,7 +93,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                             for k, v in data['Body']['1'][key].items():
                                 if 'Value' in k:
                                     dictionary[key] += dictionaryBuilder(key, v)
-                    dictionary['type'] = "meter"
+                    dictionary['type'] = "sensor"
 
                 dictionary['Timestamp'] = data['Head']['Timestamp']
                 dictionary = {k: v for k, v in dictionary.items() if v is not None}        # remove key with None values.
