@@ -66,8 +66,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and len(objectRecieved['db']['siteConfig']['js']) != 0:
             if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or os.path.basename(objectRecieved['fileReceived']).startswith('METER') or os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
                 es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'])
-                index = {"index": {"_index": "alucan", "_id": None}}
-                buffer = ""
                 data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
                 dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
                 if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
@@ -103,7 +101,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 del buffDict['Timestamp']
                 type = buffDict['type']
                 del buffDict['type']
-                index["index"]["_id"] = str(buffDict['@timestamp'])
                 es.loadData({"@timestamp": buffDict["@timestamp"], "type":type, type:buffDict})
 
                 CheckOldData()
