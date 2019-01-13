@@ -45,13 +45,44 @@ class ElasticSearchService:
                     else:
                         print("Data Loaded failed.")
                         return False
-            return
+            return False
+        else:
+            print("from elastic search")
+            print("length is "+str(len(data)))
+            for stream in data:
+                indiceStatus = self.indiceController(stream['@timestamp'])
+                if indiceStatus != False:
+                    buffer = ""
+                    self.indexPattern['index']['_index'] = indiceStatus[1]
+                    self.indexPattern['index']['_id'] = stream['@timestamp']
+                    print(self.indexPattern)
+                    typeData = stream['type']
+                    del stream['type']
+                    buffer += str(json.dumps(self.indexPattern) + "\n")
+                    buffer += str(json.dumps(stream) + '\n')
+                    print(buffer)
+                    isIdExist = requests.get(url=self.url + "/" + indiceStatus[1] + "/_doc/" + stream['@timestamp'].replace("+", "%2B"))
+                    if isIdExist.status_code == 200:
+                        print("data already exist with id")
+                        updateStatus = requests.post(url=self.url + "/" + indiceStatus[1] + "/_doc/" + stream['@timestamp'].replace("+","%2B") + "/_update",
+                                                     headers={"content-type": "application/json"},
+                                                     json={"doc": {typeData: stream[typeData]}})
+                        print(updateStatus.content)
+                    else:
+                        newData = requests.put(url=self.url + "/" + self.index + "/_doc/_bulk",
+                                               headers={"content-type": "application/json"},
+                                               data=buffer)
+                        if newData.status_code == 200:
+                            print("Data Loaded successfully.")
+                        else:
+                            print("Data Loaded failed.")
+            return True
 
     def indiceController(self, date):
         extractdata = dateutil.parser.parse(date).date()
         indice = str(self.index).lower()+str("-")+str(extractdata.year)+"."+str(extractdata.month)+"."+str(extractdata.day)
         isCreated = requests.get(url=self.url+"/"+indice)
-        print("indice patern is "+indice)
+        print("indice pattern is "+indice)
         if isCreated.status_code != 200:
             createdIndice = requests.put(url=self.url+"/"+indice)
             if createdIndice.status_code == 200:
