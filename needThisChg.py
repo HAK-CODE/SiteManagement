@@ -98,7 +98,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 dictionary['Timestamp'] = data['Head']['Timestamp']
                 dictionary = {k: v for k, v in dictionary.items() if v is not None}        # remove key with None values.
                 buffDict = dictionary.copy()
-                #del dictionary['type']
+                del dictionary['type']
                 buffDict['@timestamp'] = buffDict['Timestamp']
                 del buffDict['Timestamp']
                 type = buffDict['type']
@@ -106,16 +106,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 index["index"]["_id"] = str(buffDict['@timestamp'])
                 es.loadData({"@timestamp": buffDict["@timestamp"], "type":type, "data":buffDict})
 
-
-                #buffer += str(json.dumps(index)+"\n")
-                #buffer += str(json.dumps({"@timestamp": buffDict["@timestamp"], "type":type, "data":buffDict})+"\n")
-                #print(buffer)
-                """
-                a = requests.put(url='https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/alucan/_doc/_bulk',
-                             headers={"content-type": "application/json"},
-                             data=buffer)
-                print(a.status_code)
-                """
                 CheckOldData()
 
                 timeStamp = dictionary['Timestamp'].replace('T', ' ')
