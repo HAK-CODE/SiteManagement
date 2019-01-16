@@ -54,7 +54,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
             if '.csv' in ntpath.basename(objectRecieved['fileReceived']):
                 try:
                     df = pd.read_csv(objectRecieved['fileReceived'],
-                                     sep=';',
+                                     sep=',',
                                      header=0,
                                      engine='python')
                 except:
