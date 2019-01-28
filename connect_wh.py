@@ -157,5 +157,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     with open("DefaultDataStore/Default_Store.csv", "a") as file:
                         file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
 
+                ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
+                                        serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+                ftpObj.sendFTP()
 
 os.remove(objectRecieved['fileReceived'])
