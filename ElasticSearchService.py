@@ -50,6 +50,7 @@ class ElasticSearchService:
             print("from elastic search")
             print("length is "+str(len(data)))
             for stream in data:
+                print("date stream "+str(stream['@timestamp']))
                 indiceStatus = self.indiceController(stream['@timestamp'])
                 if indiceStatus != False:
                     buffer = ""
