@@ -80,6 +80,10 @@ class ElasticSearchService:
 
     def indiceController(self, date):
         extractdata = dateutil.parser.parse(date).date()
+        print("extractdate "+str(extractdata))
+        print("year "+str(extractdata.year))
+        print("month " + str(extractdata.month))
+        print("day " + str(extractdata.day))
         indice = str(self.index).lower()+str("-")+str(extractdata.year)+"."+str(extractdata.month)+"."+str(extractdata.day)
         isCreated = requests.get(url=self.url+"/"+indice)
         print("indice pattern is "+indice)
