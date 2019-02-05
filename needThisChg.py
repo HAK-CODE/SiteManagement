@@ -153,7 +153,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     builder['type'] = "logger"
                     for k, v in j.iteritems():
                         if type(v) is int or type(v) is float or v is None:
-                        innerDict[k] = v
+                            innerDict[k] = v
                     builder['logger'] = innerDict
                     save.append(builder)
                 es.loadData(save)
