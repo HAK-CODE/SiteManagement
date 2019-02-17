@@ -56,7 +56,6 @@ class ElasticSearchService:
                     buffer = ""
                     self.indexPattern['index']['_index'] = indiceStatus[1]
                     self.indexPattern['index']['_id'] = stream['@timestamp']
-                    print(self.indexPattern)
                     typeData = stream['type']
                     del stream['type']
                     buffer += str(json.dumps(self.indexPattern) + "\n")

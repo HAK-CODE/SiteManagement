@@ -133,6 +133,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  sep='\s*,\s*',
                                  header=0,
                                  engine='python')
+                df = df.loc[:,~df.columns.duplicated()]
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
                 missing = []
                 for i, j in enumerate(col):
