@@ -57,6 +57,8 @@ def calInsulation(index):
                                   getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)[
                                       'value']
 
+    insulation = insulation/60000
+
     indice = str(index).split("-")[0].lower() + "_insulation"
     isCreated = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice)
     print("indice pattern is " + indice)
