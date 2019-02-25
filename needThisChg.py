@@ -18,6 +18,7 @@ from colorama import Fore
 from ElasticSearchService import ElasticSearchService as es
 import pandas as pd
 import ntpath
+import s3service
 
 ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
@@ -215,5 +216,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
                                 serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         ftpObj.sendFTP()
+
+        s3 = s3service.S3(key=objectRecieved['fileReceived'], path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+        s3.send()
 
 os.remove(objectRecieved['fileReceived'])
