@@ -1,5 +1,5 @@
 import boto3
-
+import ntpath
 bucketName = "reon-archival"
 
 class S3:
@@ -9,8 +9,6 @@ class S3:
 
     def send(self):
         s3 = boto3.client('s3')
-        print("key "+str(self.key))
-        print("key " + str(self.path))
-        response = s3.upload_file(self.key, bucketName, self.path)
+        response = s3.upload_file(self.key, bucketName, self.path+"/"+ntpath.basename(self.key))
         print(response)
         return
