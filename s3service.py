@@ -9,6 +9,8 @@ class S3:
 
     def send(self):
         s3 = boto3.client('s3')
+        print("key "+str(self.key))
+        print("key " + str(self.path))
         response = s3.upload_file(self.key, bucketName, self.path)
         print(response)
         return
