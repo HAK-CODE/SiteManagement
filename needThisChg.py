@@ -76,8 +76,10 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         for key, value in dictionary.items():
                             if key in data['Body']:
                                 dictionary[key] = 0
-                                for k, v in data['Body'][key]['Values'].items():
-                                    dictionary[key] += dictionaryBuilder(key, v)
+                                if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity']:
+                                    print("now calculating inverter.")
+                                    for k, v in data['Body'][key]['Values'].items():
+                                        dictionary[key] += dictionaryBuilder(key, v)
                         dictionary['type'] = "inverter"
 
                     elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
