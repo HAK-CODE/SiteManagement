@@ -70,6 +70,8 @@ def calInsulation(index):
     elif isCreated.status_code == 200:
         print("indice already created")
 
+    print("insulation "+str(insulation))
+
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
     buffer += str(json.dumps({"value": insulation, "unit": "KW/m^2", "@timestamp": _id}) + "\n")
