@@ -76,6 +76,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         for key, value in dictionary.items():
                             if key in data['Body']:
                                 dictionary[key] = 0
+                                print("length of data "+str(len(data['Body'][key]['Values'].keys())))
+                                print("inverter numbers "+str(objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity']))
                                 if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity']:
                                     print("now calculating inverter.")
                                     for k, v in data['Body'][key]['Values'].items():
