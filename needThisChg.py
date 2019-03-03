@@ -65,6 +65,7 @@ def CheckOldData():
 
 
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
+    validation = None
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and (len(objectRecieved['db']['siteConfig']['js']) or len(objectRecieved['db']['siteConfig']['csv'])) != 0:
             if '.js' in ntpath.basename(objectRecieved['fileReceived']):
@@ -73,13 +74,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
                     dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
                     if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
+                        validation = False
                         for key, value in dictionary.items():
                             if key in data['Body']:
                                 dictionary[key] = 0
-                                print("length of data "+str(len(data['Body'][key]['Values'].keys())))
-                                print("inverter numbers "+str(objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity']))
-                                if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity']:
+                                if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity'] or key == 'PAC':
                                     print("now calculating inverter.")
+                                    validation = True
                                     for k, v in data['Body'][key]['Values'].items():
                                         dictionary[key] += dictionaryBuilder(key, v)
                         dictionary['type'] = "inverter"
@@ -113,24 +114,25 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
                     CheckOldData()
 
-                    timeStamp = dictionary['Timestamp'].replace('T', ' ')
-                    timeStamp = timeStamp.replace('+05:00', '')
-                    unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
-                    unixTimeStamp = unixTimeStamp * 1000
-                    dictionary.__delitem__('Timestamp')
-                    try:
-                        for k, v in dictionary.items():
-                            if v is not None:
-                                predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
-                                                                  value=str(v),
-                                                                  timestamp=unixTimeStamp,
-                                                                  quality=3)
-                                print(Fore.YELLOW + objectRecieved['db']['siteConfig']['js'][k]['tag'] + Fore.RESET)
-                        print(Fore.GREEN + predixConnection.timeSeries.send() + Fore.RESET)
-                    except Exception:
-                        print("No internet")
-                        with open("DefaultDataStore/Default_Store.csv", "a") as file:
-                            file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
+                    if validation is None or validation is True:
+                        timeStamp = dictionary['Timestamp'].replace('T', ' ')
+                        timeStamp = timeStamp.replace('+05:00', '')
+                        unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
+                        unixTimeStamp = unixTimeStamp * 1000
+                        dictionary.__delitem__('Timestamp')
+                        try:
+                            for k, v in dictionary.items():
+                                if v is not None:
+                                    predixConnection.timeSeries.queue(objectRecieved['db']['siteConfig']['js'][k]['tag'],
+                                                                      value=str(v),
+                                                                      timestamp=unixTimeStamp,
+                                                                      quality=3)
+                                    print(Fore.YELLOW + objectRecieved['db']['siteConfig']['js'][k]['tag'] + Fore.RESET)
+                            print(Fore.GREEN + predixConnection.timeSeries.send() + Fore.RESET)
+                        except Exception:
+                            print("No internet")
+                            with open("DefaultDataStore/Default_Store.csv", "a") as file:
+                                file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
 
             elif '.csv' in ntpath.basename(objectRecieved['fileReceived']):
                 es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'], isMultipleTS=True)
