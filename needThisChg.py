@@ -77,8 +77,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         validation = False
                         for key, value in dictionary.items():
                             if key in data['Body']:
-                                dictionary[key] = 0
                                 if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity'] or key == 'PAC':
+                                    dictionary[key] = 0
                                     print("now calculating inverter.")
                                     validation = True
                                     for k, v in data['Body'][key]['Values'].items():
