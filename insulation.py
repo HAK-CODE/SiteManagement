@@ -53,13 +53,29 @@ def calInsulation(index):
                 if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                     insulation += 0
                 else:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * \
-                                  getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)[
-                                      'value']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
 
     insulation = insulation/60000
 
-    indice = str(index).split("-")[0].lower() + "_insulation"
+    pr_ratio_data = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index +"/_search", json= {
+        "_source": "inverter.TOTAL_ENERGY",
+        "query": {
+            "exists" : { "field" : "inverter.TOTAL_ENERGY" }
+        },
+        "size": 5,
+        "sort": [
+            {
+                "@timestamp": {
+                    "order": "desc"
+                }
+            }
+        ]
+    })
+
+    forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['TOTAL_ENERGY']
+    pr_ratio = forPrcalculation/(insulation*240)
+
+    indice = str(index).split("-")[0].lower() + "-insulation"
     isCreated = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice)
     print("indice pattern is " + indice)
     if isCreated.status_code != 200:
@@ -74,7 +90,7 @@ def calInsulation(index):
 
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
-    buffer += str(json.dumps({"value": insulation, "unit": "KW/m^2", "@timestamp": _id}) + "\n")
+    buffer += str(json.dumps({"insulation": {"insulation": insulation, "unit": "KW/m^2"}, "pr-ratio": {"pr-ratio": pr_ratio, "unit": "%"}, "@timestamp": _id}) + "\n")
     isIdExist = requests.get(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace(
             "+", "%2B"))
