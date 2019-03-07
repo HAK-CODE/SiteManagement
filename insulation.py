@@ -73,7 +73,10 @@ def calInsulation(index):
     })
 
     forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['DAY_ENERGY']
+    print("day energy "+str(forPrcalculation))
     pr_ratio = (forPrcalculation/1000)/(insulation*240)
+
+    print("ratio is "+str(pr_ratio))
 
     indice = str(index).split("-")[0].lower() + "-insulation"
     isCreated = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice)
