@@ -126,7 +126,7 @@ def runThis():
     calInsulation(getNOW())
 
 sched = BackgroundScheduler()
-sched.add_job(runThis, trigger='cron', hour=2, minute=5)
+sched.add_job(runThis, trigger='cron', hour=2, minute=9)
 sched.start()
 
 while True:
