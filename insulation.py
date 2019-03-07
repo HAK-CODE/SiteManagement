@@ -58,9 +58,9 @@ def calInsulation(index):
     insulation = insulation/60000
 
     pr_ratio_data = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index +"/_search", json= {
-        "_source": "inverter.TOTAL_ENERGY",
+        "_source": "inverter.DAY_ENERGY",
         "query": {
-            "exists" : { "field" : "inverter.TOTAL_ENERGY" }
+            "exists" : { "field" : "inverter.DAY_ENERGY" }
         },
         "size": 5,
         "sort": [
@@ -72,8 +72,8 @@ def calInsulation(index):
         ]
     })
 
-    forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['TOTAL_ENERGY']
-    pr_ratio = forPrcalculation/(insulation*240)
+    forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['DAY_ENERGY']
+    pr_ratio = (forPrcalculation/1000)/(insulation*240)
 
     indice = str(index).split("-")[0].lower() + "-insulation"
     isCreated = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice)
