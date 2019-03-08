@@ -74,7 +74,7 @@ def calInsulation(index):
 
     forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['DAY_ENERGY']
     print("day energy "+str(forPrcalculation))
-    pr_ratio = (forPrcalculation/1000)/(insulation*240)
+    pr_ratio = (forPrcalculation/1000)/(insulation*240) * 100
 
     print("ratio is "+str(pr_ratio))
 
@@ -93,7 +93,7 @@ def calInsulation(index):
 
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
-    buffer += str(json.dumps({"insulation": {"insulation": insulation, "unit": "KW/m^2"}, "pr-ratio": {"pr-ratio": pr_ratio, "unit": "%"}, "@timestamp": _id}) + "\n")
+    buffer += str(json.dumps({"insulation": {"value": insulation, "unit": "KW/m^2"}, "pr-ratio": {"value": pr_ratio, "unit": "%"}, "@timestamp": _id}) + "\n")
     isIdExist = requests.get(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace(
             "+", "%2B"))
