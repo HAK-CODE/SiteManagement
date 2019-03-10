@@ -81,8 +81,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                     dictionary[key] = 0
                                     validation = True
                                     for k, v in data['Body'][key]['Values'].items():
-                                        dictionary[key] = dictionaryBuilder(key, v)
-                                        dictionary[key]['sum'] += int(dictionaryBuilder(key, v))
+                                        dictionary[key] += dictionaryBuilder(key, v)
                         dictionary['type'] = "inverter"
 
                     elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
