@@ -85,10 +85,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                         dictionary[key][k] = dictionaryBuilder(key, v)
                                         dictionary[key]['sum'] += dictionaryBuilder(key, v)
                         dictionary['type'] = "inverter"
-                        dictionary['DAY_ENERGY_OBJ'] = dictionary.pop('DAY_ENERGY')
-                        dictionary['PAC_OBJ'] = dictionary.pop('PAC')
-                        dictionary['TOTAL_ENERGY_OBJ'] = dictionary.pop('TOTAL_ENERGY')
-                        dictionary['YEAR_ENERGY_OBJ'] = dictionary.pop('YEAR_ENERGY')
+                        print("--------------------")
+                        print(dictionary)
+                        print("--------------------")
 
                     elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
                         for key, value in dictionary.items():
