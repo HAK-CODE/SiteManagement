@@ -77,7 +77,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         validation = False
                         for key, value in dictionary.items():
                             if key in data['Body']:
+                                print(key)
                                 if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity'] or key == 'PAC':
+                                    print("inside "+str(key))
                                     dictionary[key] = {}
                                     dictionary[key]['sum'] = 0
                                     validation = True
