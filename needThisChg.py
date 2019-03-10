@@ -116,6 +116,14 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     CheckOldData()
 
                     if validation is None or validation is True:
+                        if 'DAY_ENERHY' in dictionary:
+                            dictionary['DAY_ENERGY'] = dictionary['DAY_ENERGY']['sum']
+                        if 'TOTAL_ENERGY' in dictionary:
+                            dictionary['TOTAL_ENERGY'] = dictionary['TOTAL_ENERGY']['sum']
+                        if 'YEAR_ENERGY' in dictionary:
+                            dictionary['YEAR_ENERGY'] = dictionary['YEAR_ENERGY']['sum']
+                        if 'PAC' in dictionary:
+                            dictionary['PAC'] = dictionary['PAC']['sum']
                         timeStamp = dictionary['Timestamp'].replace('T', ' ')
                         timeStamp = timeStamp.replace('+05:00', '')
                         unixTimeStamp = int(time.mktime(datetime.datetime.strptime(timeStamp, "%Y-%m-%d %H:%M:%S").timetuple()))
