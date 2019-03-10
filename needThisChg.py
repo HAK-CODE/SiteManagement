@@ -78,7 +78,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         for key, value in dictionary.items():
                             if key in data['Body']:
                                 if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity'] or key == 'PAC':
-                                    dictionary[key]['sum'] = 0
+                                    dictionary[key] = 0
                                     validation = True
                                     for k, v in data['Body'][key]['Values'].items():
                                         dictionary[key] = dictionaryBuilder(key, v)
