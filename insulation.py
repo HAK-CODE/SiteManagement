@@ -73,7 +73,7 @@ def calInsulation(index):
         ]
     })
 
-    forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['DAY_ENERGY']
+    forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['DAY_ENERGY']['sum']
     print("day energy "+str(forPrcalculation))
     pr_ratio = (forPrcalculation/1000)/(insulation*240) * 100
 
