@@ -3,6 +3,7 @@ import requests
 import json
 from apscheduler.schedulers.background import BackgroundScheduler
 import time
+import requests
 
 
 def getDIfferenceMin(d1, d2):
@@ -116,14 +117,17 @@ def calInsulation(index):
             print("Data Loaded failed.")
 
 
-def getNOW():
+def getNOW(tag):
     yesterday = date.today() - timedelta(1)
-    return str("alu-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
+    return str(tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
 
 
 def runThis():
     print("starting")
-    calInsulation(getNOW())
+    tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
+                         headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
+    for tag in json.loads(tags.text)['response']:
+        calInsulation(getNOW(tag))
 
 sched = BackgroundScheduler()
 sched.add_job(runThis, trigger='cron', hour=2, minute=9)
