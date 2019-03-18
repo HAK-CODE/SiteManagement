@@ -171,6 +171,15 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     builder['type'] = "logger"
                     for k, v in j.iteritems():
                         if type(v) is int or type(v) is float or v is None:
+                            if k in objectRecieved['db']['siteConfig']['csv']:
+                                if objectRecieved['db']['siteConfig']['csv'][k]['applyChecks']:
+                                    if objectRecieved['db']['siteConfig']['csv'][k]['minCheckApply']:
+                                        v = None if v < objectRecieved['db']['siteConfig']['csv'][k]['min'] else v
+                                    if objectRecieved['db']['siteConfig']['csv'][k]['maxCheckApply']:
+                                        v = None if v > objectRecieved['db']['siteConfig']['csv'][k]['max'] else v
+                                if objectRecieved['db']['siteConfig']['csv'][k]['applyOperation']:
+                                    print("division")
+                                    v = (v / objectRecieved['db']['siteConfig']['csv'][k]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][k]['offset']
                             innerDict[k] = v
                     builder['logger'] = innerDict
                     save.append(builder)
