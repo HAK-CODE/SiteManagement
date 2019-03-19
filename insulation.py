@@ -77,7 +77,7 @@ def calInsulation(index):
     })
 
     X1 = json.loads(X1.text)['hits']['hits']
-
+    flag_x1 = False
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == 'logger':
@@ -85,16 +85,20 @@ def calInsulation(index):
                 if value['EtSolar'] != 0:
                     print("value not 0")
                     x1_val = value['EtSolar']
-                    print("brake")
+                    flag_x1 = True
                     break
             else:
                 print("value is " + str(value['TOTAL_ENERGY']['sum']))
                 if value['TOTAL_ENERGY']['sum'] != 0:
                     print("value not 0")
                     x1_val = value['TOTAL_ENERGY']['sum']
-                    print("brake")
+                    flag_x1 = True
                     break
 
+        if flag_x1:
+            break
+
+    flag_x2 = False
     X2 = requests.get(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index + "/_search", json={
             "_source": ["inverter.TOTAL_ENERGY.sum", "logger.EtSolar"],
@@ -118,11 +122,15 @@ def calInsulation(index):
             if key == 'logger':
                 if value['EtSolar'] != 0:
                     x2_val = value['EtSolar']
+                    flag_x2 = True
                     break
             else:
                 if value['TOTAL_ENERGY']['sum'] != 0:
                     x2_val = value['TOTAL_ENERGY']['sum']
+                    flag_x2 = True
                     break
+        if flag_x2:
+            break
 
     print(x1_val)
     print(x2_val)
