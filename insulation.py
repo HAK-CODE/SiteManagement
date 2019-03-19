@@ -160,9 +160,9 @@ def calInsulation(index):
     isIdExist = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B"))
     if isIdExist.status_code == 200:
         print("data already exist with id")
-        updateStatus = requests.post(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B") + "/_update",
+        updateStatus = requests.post(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B"),
                                      headers={"content-type": "application/json"},
-                                     json={"doc": {"value": insulation, "unit": "KW/m^2", "@timestamp": _id}})
+                                     json={"insulation": {"value": insulation, "unit": "KW/m^2"}, "pr-ratio": {"value": pr_ratio, "unit": "%"}, "@timestamp": _id})
         print(updateStatus.content)
     else:
         newData = requests.put(
