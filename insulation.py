@@ -66,7 +66,7 @@ def calInsulation(index):
         "query": {
             "match_all": {}
         },
-        "size": 10,
+        "size": 200,
         "sort": [
             {
                 "@timestamp": {
@@ -85,12 +85,14 @@ def calInsulation(index):
                 if value['EtSolar'] != 0:
                     print("value not 0")
                     x1_val = value['EtSolar']
+                    print("brake")
                     break
             else:
                 print("value is " + str(value['TOTAL_ENERGY']['sum']))
                 if value['TOTAL_ENERGY']['sum'] != 0:
                     print("value not 0")
                     x1_val = value['TOTAL_ENERGY']['sum']
+                    print("brake")
                     break
 
     X2 = requests.get(
@@ -99,7 +101,7 @@ def calInsulation(index):
             "query": {
                 "match_all": {}
             },
-            "size": 10,
+            "size": 200,
             "sort": [
                 {
                     "@timestamp": {
