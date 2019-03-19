@@ -66,7 +66,7 @@ def calInsulation(index):
         "query": {
             "match_all": {}
         },
-        "size": 100,
+        "size": 10,
         "sort": [
             {
                 "@timestamp": {
@@ -99,7 +99,7 @@ def calInsulation(index):
             "query": {
                 "match_all": {}
             },
-            "size": 100,
+            "size": 10,
             "sort": [
                 {
                     "@timestamp": {
