@@ -81,11 +81,15 @@ def calInsulation(index):
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == 'logger':
+                print("value is "+str(value['EtSolar']))
                 if value['EtSolar'] != 0:
+                    print("value not 0")
                     x1_val = value['EtSolar']
                     break
             else:
+                print("value is " + str(value['TOTAL_ENERGY']['sum']))
                 if value['TOTAL_ENERGY']['sum'] != 0:
+                    print("value not 0")
                     x1_val = value['TOTAL_ENERGY']['sum']
                     break
 
