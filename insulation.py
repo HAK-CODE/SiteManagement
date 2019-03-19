@@ -17,6 +17,7 @@ def getDIfferenceMin(d1, d2):
 
 
 def calInsulation(index):
+    print(index)
     data = requests.post(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index + "/_search", json={
             "_source": ["sensor.2", "@timestamp"],
@@ -30,6 +31,7 @@ def calInsulation(index):
         })
 
     res = json.loads(data.text)
+    print(res)
     _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
     _id = datetime.strptime(_id, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
     timeDiff = 0
@@ -168,9 +170,11 @@ def runThis():
     for tag in json.loads(tags.text)['response']:
         calInsulation(getNOW(tag))
 
-sched = BackgroundScheduler()
-sched.add_job(runThis, trigger='cron', hour=2, minute=9)
-sched.start()
+# sched = BackgroundScheduler()
+# sched.add_job(runThis, trigger='cron', hour=2, minute=9)
+# sched.start()
+#
+# while True:
+#     time.sleep(30)
 
-while True:
-    time.sleep(30)
+runThis()
