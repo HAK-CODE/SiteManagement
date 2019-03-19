@@ -67,7 +67,7 @@ def calInsulation(index):
         "query": {
             "match_all": {}
         },
-        "size": 500,
+        "size": 100,
         "sort": [
             {
                 "@timestamp": {
@@ -82,11 +82,13 @@ def calInsulation(index):
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == 'logger':
-                x1_val = value['EtSolar']
-                break
+                if value['EtSolar'] is not 0:
+                    x1_val = value['EtSolar']
+                    break
             else:
-                x1_val = value['TOTAL_ENERGY']['sum']
-                break
+                if value['TOTAL_ENERGY']['sum'] is not 0:
+                    x1_val = value['TOTAL_ENERGY']['sum']
+                    break
 
     X2 = requests.get(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index + "/_search", json={
@@ -94,7 +96,7 @@ def calInsulation(index):
             "query": {
                 "match_all": {}
             },
-            "size": 500,
+            "size": 100,
             "sort": [
                 {
                     "@timestamp": {
@@ -109,11 +111,13 @@ def calInsulation(index):
     for entry in X2:
         for key, value in entry['_source'].items():
             if key == 'logger':
-                x2_val = value['EtSolar']
-                break
+                if value['EtSolar'] is not 0:
+                    x2_val = value['EtSolar']
+                    break
             else:
-                x2_val = value['TOTAL_ENERGY']['sum']
-                break
+                if value['TOTAL_ENERGY']['sum'] is not 0:
+                    x2_val = value['TOTAL_ENERGY']['sum']
+                    break
 
     print(x1_val)
     print(x2_val)
