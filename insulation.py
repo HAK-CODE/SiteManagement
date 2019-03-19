@@ -81,11 +81,11 @@ def calInsulation(index):
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == 'logger':
-                if value['EtSolar'] is not 0:
+                if value['EtSolar'] != 0:
                     x1_val = value['EtSolar']
                     break
             else:
-                if value['TOTAL_ENERGY']['sum'] is not 0:
+                if value['TOTAL_ENERGY']['sum'] != 0:
                     x1_val = value['TOTAL_ENERGY']['sum']
                     break
 
@@ -110,11 +110,11 @@ def calInsulation(index):
     for entry in X2:
         for key, value in entry['_source'].items():
             if key == 'logger':
-                if value['EtSolar'] is not 0:
+                if value['EtSolar'] != 0:
                     x2_val = value['EtSolar']
                     break
             else:
-                if value['TOTAL_ENERGY']['sum'] is not 0:
+                if value['TOTAL_ENERGY']['sum'] != 0:
                     x2_val = value['TOTAL_ENERGY']['sum']
                     break
 
