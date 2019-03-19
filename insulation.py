@@ -58,22 +58,65 @@ def calInsulation(index):
 
     insulation = insulation/60000
 
-    pr_ratio_data = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index +"/_search", json= {
-        "_source": "inverter.DAY_ENERGY",
+    x1_val = 0
+    x2_val = 0
+    X1 = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index +"/_search", json= {
+        "_source": ["inverter.TOTAL_ENERGY.sum","logger.EtSolar"],
         "query": {
-            "exists" : { "field" : "inverter.DAY_ENERGY" }
+            "match_all": {}
         },
-        "size": 5,
+        "size": 500,
         "sort": [
             {
                 "@timestamp": {
-                    "order": "desc"
+                    "order": "asc"
                 }
             }
         ]
     })
 
-    forPrcalculation = json.loads(pr_ratio_data.text)['hits']['hits'][0]['_source']['inverter']['DAY_ENERGY']['sum']
+    X1 = json.loads(X1.text)['hits']['hits']
+
+    for entry in X1:
+        for key,value in entry['_source'].items():
+            if key == 'logger':
+                x1_val = value['EtSolar']
+                break
+            else:
+                x1_val = value['TOTAL_ENERGY']['sum']
+                break
+
+    X2 = requests.get(
+        url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index + "/_search", json={
+            "_source": ["inverter.TOTAL_ENERGY.sum", "logger.EtSolar"],
+            "query": {
+                "match_all": {}
+            },
+            "size": 500,
+            "sort": [
+                {
+                    "@timestamp": {
+                        "order": "desc"
+                    }
+                }
+            ]
+        })
+
+    X2 = json.loads(X2.text)['hits']['hits']
+
+    for entry in X2:
+        for key, value in entry['_source'].items():
+            if key == 'logger':
+                x2_val = value['EtSolar']
+                break
+            else:
+                x2_val = value['TOTAL_ENERGY']['sum']
+                break
+
+    print(x1_val)
+    print(x2_val)
+    forPrcalculation = x2_val - x1_val
+
     print("day energy "+str(forPrcalculation))
     pr_ratio = (forPrcalculation/1000)/(insulation*240) * 100
 
@@ -95,16 +138,12 @@ def calInsulation(index):
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
     buffer += str(json.dumps({"insulation": {"value": insulation, "unit": "KW/m^2"}, "pr-ratio": {"value": pr_ratio, "unit": "%"}, "@timestamp": _id}) + "\n")
-    isIdExist = requests.get(
-        url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace(
-            "+", "%2B"))
+    isIdExist = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B"))
     if isIdExist.status_code == 200:
         print("data already exist with id")
-        updateStatus = requests.post(
-            url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace(
-                "+", "%2B") + "/_update",
-            headers={"content-type": "application/json"},
-            json={"doc": {"value": insulation, "unit": "KW/m^2", "@timestamp": _id}})
+        updateStatus = requests.post(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B") + "/_update",
+                                     headers={"content-type": "application/json"},
+                                     json={"doc": {"value": insulation, "unit": "KW/m^2", "@timestamp": _id}})
         print(updateStatus.content)
     else:
         newData = requests.put(
