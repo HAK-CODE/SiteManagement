@@ -174,7 +174,8 @@ def calInsulation(sizeTag):
     forPrcalculation = x2_val - x1_val
 
     print("day energy "+str(forPrcalculation))
-    pr_ratio = (forPrcalculation/1000)/(insulation* int(sizeTag['size'])) * 100
+    print(type(insulation))
+    pr_ratio = (forPrcalculation/1000)/(insulation * sizeTag['size']) * 100
 
     print("ratio is "+str(pr_ratio))
 
