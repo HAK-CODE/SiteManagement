@@ -16,10 +16,10 @@ def getDIfferenceMin(d1, d2):
     return {"status": int(round(td.total_seconds() / 60)) <= 15, "value": int(round(td.total_seconds() / 60))}
 
 
-def calInsulation(index):
-    print(index)
+def calInsulation(sizeTag):
+    print(sizeTag['tag'])
     data = requests.post(
-        url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index + "/_search", json={
+        url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + sizeTag['tag'] + "/_search", json={
             "_source": ["sensor.2", "@timestamp"],
             "size": 10000,
             "query": {
@@ -31,37 +31,73 @@ def calInsulation(index):
         })
 
     res = json.loads(data.text)
-    _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
-    _id = datetime.strptime(_id, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
-    timeDiff = 0
-    prev_value = 0
-    insulation = 0
-    timeDiff = res['hits']['hits'][0]['_source']['@timestamp']
-    prev_value = res['hits']['hits'][0]['_source']['sensor']['2']
-    insulation += 0.5 * (res['hits']['hits'][0]['_source']['sensor']['2'] + 0) * 0
+    if len(res['hits']['hits']) != 0:
+        _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
+        _id = datetime.strptime(_id, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+        timeDiff = 0
+        prev_value = 0
+        insulation = 0
+        timeDiff = res['hits']['hits'][0]['_source']['@timestamp']
+        prev_value = res['hits']['hits'][0]['_source']['sensor']['2']
+        insulation += 0.5 * (res['hits']['hits'][0]['_source']['sensor']['2'] + 0) * 0
 
-    for i, v in enumerate(res['hits']['hits']):
-        if i + 1 <= len(res['hits']['hits']) - 1:
-            if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
-                insulation += 0
-            else:
-                insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * \
-                              getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
-            prev_value = res['hits']['hits'][i + 1]['_source']['sensor']['2']
-            timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
-            if i + 1 == len(res['hits']['hits']) - 1:
-                insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * \
-                              getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
+        for i, v in enumerate(res['hits']['hits']):
+            if i + 1 <= len(res['hits']['hits']) - 1:
                 if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                     insulation += 0
                 else:
                     insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                prev_value = res['hits']['hits'][i + 1]['_source']['sensor']['2']
+                timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
+                if i + 1 == len(res['hits']['hits']) - 1:
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
+                    if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
+                        insulation += 0
+                    else:
+                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+    else:
+        print("using MET-GHI")
+        data = requests.post(
+            url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + sizeTag['tag'] + "/_search",
+            json={
+                "_source": ["logger.MET-GHI", "@timestamp"],
+                "size": 10000,
+                "query": {
+                    "exists": {"field": "logger.MET-GHI"}
+                },
+                "sort": [
+                    {"@timestamp": "asc"}
+                ]
+            })
+        res = json.loads(data.text)
+        _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
+        _id = datetime.strptime(_id, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+        timeDiff = 0
+        prev_value = 0
+        insulation = 0
+        timeDiff = res['hits']['hits'][0]['_source']['@timestamp']
+        prev_value = res['hits']['hits'][0]['_source']['logger']['MET-GHI']
+        insulation += 0.5 * (res['hits']['hits'][0]['_source']['logger']['MET-GHI'] + 0) * 0
+        for i, v in enumerate(res['hits']['hits']):
+            if i + 1 <= len(res['hits']['hits']) - 1:
+                if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
+                    insulation += 0
+                else:
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                prev_value = res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI']
+                timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
+                if i + 1 == len(res['hits']['hits']) - 1:
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
+                    if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
+                        insulation += 0
+                    else:
+                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
 
     insulation = insulation/60000
 
     x1_val = 0
     x2_val = 0
-    X1 = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index +"/_search", json= {
+    X1 = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + sizeTag['tag'] +"/_search", json= {
         "_source": ["inverter.TOTAL_ENERGY.sum","logger.EtSolar"],
         "query": {
             "match_all": {}
@@ -100,7 +136,7 @@ def calInsulation(index):
 
     flag_x2 = False
     X2 = requests.get(
-        url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + index + "/_search", json={
+        url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + sizeTag['tag'] + "/_search", json={
             "_source": ["inverter.TOTAL_ENERGY.sum", "logger.EtSolar"],
             "query": {
                 "match_all": {}
@@ -137,11 +173,11 @@ def calInsulation(index):
     forPrcalculation = x2_val - x1_val
 
     print("day energy "+str(forPrcalculation))
-    pr_ratio = (forPrcalculation/1000)/(insulation*240) * 100
+    pr_ratio = (forPrcalculation/1000)/(insulation*sizeTag['size']) * 100
 
     print("ratio is "+str(pr_ratio))
 
-    indice = str(index).split("-")[0].lower() + "-insulation"
+    indice = str(sizeTag['tag']).split("-")[0].lower() + "-insulation"
     isCreated = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice)
     print("indice pattern is " + indice)
     if isCreated.status_code != 200:
@@ -185,7 +221,7 @@ def runThis():
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
     for tag in json.loads(tags.text)['response']:
-        calInsulation(getNOW(tag))
+        calInsulation({"tag": getNOW(tag['tag']), "size": tag['size']})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=2, minute=9)
