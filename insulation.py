@@ -224,7 +224,7 @@ def runThis():
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
     for tag in json.loads(tags.text)['response']:
-        calInsulation({"tag": getNOW(tag['tag']), "size": tag['size']})
+        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size'])})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=2, minute=9)
