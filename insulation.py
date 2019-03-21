@@ -18,6 +18,7 @@ def getDIfferenceMin(d1, d2):
 
 def calInsulation(sizeTag):
     print(sizeTag['tag'])
+    print(sizeTag['size'])
     data = requests.post(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + sizeTag['tag'] + "/_search", json={
             "_source": ["sensor.2", "@timestamp"],
