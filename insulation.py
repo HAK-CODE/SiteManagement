@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, date
-import requests
 import json
 from apscheduler.schedulers.background import BackgroundScheduler
 import time
@@ -17,7 +16,7 @@ def getDIfferenceMin(d1, d2):
 
 
 def calInsulation(sizeTag):
-    sizeTag['tag'] = "alu-2019.3.18"
+    print(sizeTag['tag'])
     print(sizeTag['size'])
     data = requests.post(
         url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + sizeTag['tag'] + "/_search", json={
@@ -176,7 +175,7 @@ def calInsulation(sizeTag):
     print("day energy "+str(forPrcalculation))
     print(type(insulation))
     print(type(sizeTag['size']))
-    pr_ratio = (forPrcalculation/1000)/(insulation * sizeTag['size']) * 100
+    pr_ratio = (forPrcalculation)/(insulation * sizeTag['size']) * 100
 
     print("ratio is "+str(pr_ratio))
 
@@ -195,13 +194,19 @@ def calInsulation(sizeTag):
 
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
-    buffer += str(json.dumps({"insulation": {"value": insulation, "unit": "KW/m^2"}, "pr-ratio": {"value": pr_ratio, "unit": "%"}, "@timestamp": _id}) + "\n")
+    buffer += str(json.dumps({"insulation": {"value": insulation, "unit": "KW/m^2"},
+                              "pr-ratio": {"value": pr_ratio, "unit": "%"},
+                              "DAY_CALCULATION": forPrcalculation,
+                              "@timestamp": _id}) + "\n")
     isIdExist = requests.get(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B"))
     if isIdExist.status_code == 200:
         print("data already exist with id")
         updateStatus = requests.post(url="https://search-reon-yf6s4jcgv6tapjin4xblwtgk6y.us-east-2.es.amazonaws.com/" + indice + "/_doc/" + _id.replace("+", "%2B"),
                                      headers={"content-type": "application/json"},
-                                     json={"insulation": {"value": insulation, "unit": "KW/m^2"}, "pr-ratio": {"value": pr_ratio, "unit": "%"}, "@timestamp": _id})
+                                     json={"insulation": {"value": insulation, "unit": "KW/m^2"},
+                                           "pr-ratio": {"value": pr_ratio, "unit": "%"},
+                                           "DAY_CALCULATION": forPrcalculation,
+                                           "@timestamp": _id})
         print(updateStatus.content)
     else:
         newData = requests.put(
@@ -226,11 +231,9 @@ def runThis():
     for tag in json.loads(tags.text)['response']:
         calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size'])})
 
-# sched = BackgroundScheduler()
-# sched.add_job(runThis, trigger='cron', hour=2, minute=9)
-# sched.start()
-#
-# while True:
-#     time.sleep(30)
+sched = BackgroundScheduler()
+sched.add_job(runThis, trigger='cron', hour=2, minute=9)
+sched.start()
 
-runThis()
+while True:
+    time.sleep(30)
