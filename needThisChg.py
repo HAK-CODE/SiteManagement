@@ -171,7 +171,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     builder['@timestamp'] = index
                     builder['type'] = "logger"
                     for k, v in j.iteritems():
+                        print(str(v) + " type is "+ str(type(v)))
                         if type(v) is int or type(v) is float or v is None:
+                            print("in cal "+str(v))
                             if k in objectRecieved['db']['siteConfig']['csv']:
                                 if objectRecieved['db']['siteConfig']['csv'][k]['applyChecks']:
                                     if objectRecieved['db']['siteConfig']['csv'][k]['minCheckApply']:
