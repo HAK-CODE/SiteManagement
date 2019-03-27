@@ -19,6 +19,7 @@ from ElasticSearchService import ElasticSearchService as es
 import pandas as pd
 import ntpath
 import s3service
+import numpy as np
 
 ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
@@ -149,7 +150,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  sep='\s*,\s*',
                                  header=0,
                                  engine='python')
-                df.fillna('', inplace=True)
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
@@ -171,9 +171,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     builder['@timestamp'] = index
                     builder['type'] = "logger"
                     for k, v in j.iteritems():
-                        print(str(v) + " type is "+ str(type(v)))
-                        if type(v) is int or type(v) is float or v is None:
-                            print("in cal "+str(v))
+                        if type(v) is int or type(v) is float or v is None and v is not np.nan:
                             if k in objectRecieved['db']['siteConfig']['csv']:
                                 if objectRecieved['db']['siteConfig']['csv'][k]['applyChecks']:
                                     if objectRecieved['db']['siteConfig']['csv'][k]['minCheckApply']:
@@ -181,7 +179,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                     if objectRecieved['db']['siteConfig']['csv'][k]['maxCheckApply']:
                                         v = None if v > objectRecieved['db']['siteConfig']['csv'][k]['max'] else v
                                 if objectRecieved['db']['siteConfig']['csv'][k]['applyOperation']:
-                                    print("division")
                                     v = (v / objectRecieved['db']['siteConfig']['csv'][k]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][k]['offset']
                             innerDict[k] = v
                     builder['logger'] = innerDict
@@ -189,23 +186,21 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 es.loadData(save)
 
                 df_final.set_index('TIMESTAMP', inplace=True)
-                print(df_final)
 
-                df_final.dropna(inplace=True)
+                df_final.dropna(axis='columns', inplace=True)
+
+                print(df_final)
                 receiveTime = time.ctime(os.path.getctime(objectRecieved['fileReceived']))
                 filename = ntpath.basename(objectRecieved['fileReceived'])
                 col.remove('TIMESTAMP')
                 for keys in col:
                     if objectRecieved['db']['siteConfig']['csv'][keys]['applyChecks']:
                         if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                            df_final[keys].loc[
-                                df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
+                            df_final[keys].loc[df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
                         if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                            df_final[keys].loc[
-                                df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
+                            df_final[keys].loc[df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
                     if objectRecieved['db']['siteConfig']['csv'][keys]['applyOperation']:
-                        df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + \
-                                         objectRecieved['db']['siteConfig']['csv'][keys]['offset']
+                        df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][keys]['offset']
 
                 CheckOldData()
 
