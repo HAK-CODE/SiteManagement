@@ -152,6 +152,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  engine='python')
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
+                df.dropna(axis='columns', inplace=True)
+
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
                 missing = []
                 for i, j in enumerate(col):
@@ -187,7 +189,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
                 df_final.set_index('TIMESTAMP', inplace=True)
 
-                df_final.dropna(axis='columns', inplace=True)
 
                 print(df_final)
                 receiveTime = time.ctime(os.path.getctime(objectRecieved['fileReceived']))
