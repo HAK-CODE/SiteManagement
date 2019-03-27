@@ -116,7 +116,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     CheckOldData()
 
                     if validation is None or validation is True:
-                        if 'DAY_ENERHY' in dictionary:
+                        if 'DAY_ENERGY' in dictionary:
                             dictionary['DAY_ENERGY'] = dictionary['DAY_ENERGY']['sum']
                         if 'TOTAL_ENERGY' in dictionary:
                             dictionary['TOTAL_ENERGY'] = dictionary['TOTAL_ENERGY']['sum']
@@ -149,6 +149,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  sep='\s*,\s*',
                                  header=0,
                                  engine='python')
+                df.fillna('', inplace=True)
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
