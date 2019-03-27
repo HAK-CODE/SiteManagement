@@ -202,7 +202,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 df_final[keys].loc[df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
                         if objectRecieved['db']['siteConfig']['csv'][keys]['applyOperation']:
                             df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][keys]['offset']
-                    except:
+                    except Exception:
                         print("column dropped on filtration.")
 
                 CheckOldData()
