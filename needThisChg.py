@@ -194,13 +194,16 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 filename = ntpath.basename(objectRecieved['fileReceived'])
                 col.remove('TIMESTAMP')
                 for keys in col:
-                    if objectRecieved['db']['siteConfig']['csv'][keys]['applyChecks']:
-                        if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                            df_final[keys].loc[df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
-                        if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
-                            df_final[keys].loc[df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
-                    if objectRecieved['db']['siteConfig']['csv'][keys]['applyOperation']:
-                        df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][keys]['offset']
+                    try:
+                        if objectRecieved['db']['siteConfig']['csv'][keys]['applyChecks']:
+                            if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
+                                df_final[keys].loc[df_final[keys] < objectRecieved['db']['siteConfig']['csv'][keys]['min']] = None
+                            if objectRecieved['db']['siteConfig']['csv'][keys]['minCheckApply']:
+                                df_final[keys].loc[df_final[keys] > objectRecieved['db']['siteConfig']['csv'][keys]['max']] = None
+                        if objectRecieved['db']['siteConfig']['csv'][keys]['applyOperation']:
+                            df_final[keys] = (df_final[keys] / objectRecieved['db']['siteConfig']['csv'][keys]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][keys]['offset']
+                    except:
+                        print("column dropped on filtration.")
 
                 CheckOldData()
 
