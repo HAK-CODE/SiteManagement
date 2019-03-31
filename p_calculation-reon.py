@@ -28,6 +28,7 @@ except:
 siteConfigData = json.loads(siteConfig.content.decode('utf-8'))
 print(siteConfigData)
 siteTag = "site-"+siteConfigData['siteInfo']['siteTag']+"-"
+siteTag = siteTag.lower()
 
 print(siteTag)
 
