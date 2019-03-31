@@ -50,7 +50,7 @@ start_year = datee.year
 bit = 0
 dgr = 1
 url = os.environ['es_url']
-for i in range(1, 2):  # 25 years data
+for i in range(1, 26):  # 25 years data
     print("DGR:" + str(dgr))
     for j in range(1, 13):
         indexPattern = {"index": {"_index": None, "_id": None}}
