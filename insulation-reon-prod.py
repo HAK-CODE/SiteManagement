@@ -34,11 +34,11 @@ def calInsulation(sizeTag):
             ]
         })
 
-    res = json.loads(data.text)
-
-    if res.status_code != 200:
+    if data.status_code != 200:
         print("execution halt")
         return
+
+    res = json.loads(data.text)
 
     if len(res['hits']['hits']) != 0:
         _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
