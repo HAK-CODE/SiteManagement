@@ -248,9 +248,11 @@ def runThis():
     for tag in json.loads(tags.text)['response']:
         calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size'])})
 
-sched = BackgroundScheduler()
-sched.add_job(runThis, trigger='cron', hour=2, minute=9)
-sched.start()
+# sched = BackgroundScheduler()
+# sched.add_job(runThis, trigger='cron', hour=2, minute=9)
+# sched.start()
+#
+# while True:
+#     time.sleep(30)
 
-while True:
-    time.sleep(30)
+runThis()
