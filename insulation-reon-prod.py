@@ -35,6 +35,7 @@ def calInsulation(sizeTag):
         })
 
     res = json.loads(data.text)
+    print(res)
     if len(res['hits']['hits']) != 0:
         _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
         _id = datetime.strptime(_id, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
