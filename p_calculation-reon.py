@@ -78,11 +78,11 @@ for i in range(1, 2):  # 25 years data
         for k in range(1, days + 1):
             timestamp = str(start_year) + "." + str(months) + "." + str(k)
             indexPattern['index']['_index'] = siteTag+timestamp
-            format = datetime.datetime.strptime("2019-5-3", "%Y-%m-%d")
+            format = datetime.datetime.strptime(str(str(start_year) + "-" + str(months) + "-" + str(k)), "%Y-%m-%d")
             format = str(format).replace(" ","T")+"+05:00"
             indexPattern['index']['_id'] = format
             data = {
-                "@timestamp": str(start_year) + "-" + str(months) + "-" + str(k),
+                "@timestamp": format,
                 "p50": p50,
                 "p90": p90,
                 "unit": "kWh"
@@ -90,26 +90,27 @@ for i in range(1, 2):  # 25 years data
             buffer += str(json.dumps(indexPattern) + "\n")
             buffer += str(json.dumps(data) + '\n')
             print(buffer)
-            isIdExist = requests.get(
+
+        isIdExist = requests.get(
+            url=url + "/" + indexPattern['index']['_index'] + "/_doc/" + data['@timestamp'].replace("+", "%2B"),
+            auth=(os.environ['es_user'], os.environ['es_pass']))
+        if isIdExist.status_code == 200:
+            print("data already exist with id")
+            updateStatus = requests.post(
                 url=url + "/" + indexPattern['index']['_index'] + "/_doc/" + data['@timestamp'].replace("+", "%2B"),
-                auth=(os.environ['es_user'], os.environ['es_pass']))
-            if isIdExist.status_code == 200:
-                print("data already exist with id")
-                updateStatus = requests.post(
-                    url=url + "/" + indexPattern['index']['_index'] + "/_doc/" + data['@timestamp'].replace("+","%2B"),
-                    auth=(os.environ['es_user'], os.environ['es_pass']),
-                    headers={"content-type": "application/json"},
-                    json=data)
-                print(updateStatus.content)
+                auth=(os.environ['es_user'], os.environ['es_pass']),
+                headers={"content-type": "application/json"},
+                json=data)
+            print(updateStatus.content)
+        else:
+            newData = requests.put(url=url + "/" + indexPattern['index']['_index'] + "/_doc/_bulk",
+                                   auth=(os.environ['es_user'], os.environ['es_pass']),
+                                   headers={"content-type": "application/json"},
+                                   data=buffer)
+            if newData.status_code == 200:
+                print("Data Loaded successfully.")
             else:
-                newData = requests.put(url=url + "/" + indexPattern['index']['_index'] + "/_doc/_bulk",
-                                       auth=(os.environ['es_user'], os.environ['es_pass']),
-                                       headers={"content-type": "application/json"},
-                                       data=buffer)
-                if newData.status_code == 200:
-                    print("Data Loaded successfully.")
-                else:
-                    print("Data Loaded failed.")
+                print("Data Loaded failed.")
         start_month = datee.month + j
     bit = 0
     dgr = 1 - dgr_per * i
