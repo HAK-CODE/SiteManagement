@@ -213,8 +213,8 @@ def calInsulation(sizeTag):
 
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
-    buffer += str(json.dumps({"insulation": {"value": insulation if insulation <= 100 else 100, "unit": "KW/m^2"},
-                              "pr-ratio": {"value": pr_ratio, "unit": "%"},
+    buffer += str(json.dumps({"insulation": {"value": insulation, "unit": "KW/m^2"},
+                              "pr-ratio": {"value": pr_ratio if pr_ratio <=100 else 100, "unit": "%"},
                               "DAY_CALCULATION": forPrcalculation,
                               "@timestamp": _id}) + "\n")
     isIdExist = requests.get(url= url + "/" + indice + "/_doc/" + _id.replace("+", "%2B"),
@@ -224,8 +224,8 @@ def calInsulation(sizeTag):
         updateStatus = requests.post(url= url + "/" + indice + "/_doc/" + _id.replace("+", "%2B"),
                                      headers={"content-type": "application/json"},
                                      auth=(os.environ['es_user'], os.environ['es_pass']),
-                                     json={"insulation": {"value": insulation if insulation <= 100 else 100, "unit": "KW/m^2"},
-                                           "pr-ratio": {"value": pr_ratio, "unit": "%"},
+                                     json={"insulation": {"value": insulation, "unit": "KW/m^2"},
+                                           "pr-ratio": {"value": pr_ratio if pr_ratio <=100 else 100, "unit": "%"},
                                            "DAY_CALCULATION": forPrcalculation,
                                            "@timestamp": _id})
         print(updateStatus.content)
