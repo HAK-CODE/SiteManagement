@@ -196,7 +196,7 @@ def calInsulation(sizeTag):
 
     print("ratio is "+str(pr_ratio))
 
-    indice = str(sizeTag['tag']).split("-")[0].lower() + "-" + str(sizeTag['tag']).split("-")[1].lower() + "-insulation"
+    indice = str(sizeTag['tag']).split("-")[0].lower() + "-" + "-insulation" + str(sizeTag['tag']).split("-")[1].lower()
     isCreated = requests.get(url=url + "/" + indice,
                              auth=(os.environ['es_user'], os.environ['es_pass']))
     print("indice pattern is " + indice)
