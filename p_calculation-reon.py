@@ -77,10 +77,10 @@ for i in range(1, 20):  # 25 years data
         buffer = ""
         for k in range(1, days + 1):
             timestamp = str(start_year) + "." + str(months) + "." + str(k)
-            indexPattern['index']['_index'] = siteTag+timestamp
+            indexPattern['index']['_index'] = "site-ktml-pvalues"
             format = datetime.datetime.strptime(str(str(start_year) + "-" + str(months) + "-" + str(k)), "%Y-%m-%d")
             format = str(format).replace(" ","T")+"+05:00"
-            indexPattern['index']['_id'] = "site-ktml-pvalues"
+            indexPattern['index']['_id'] = format
             data = {
                 "@timestamp": format,
                 "p50": p50,
@@ -89,12 +89,11 @@ for i in range(1, 20):  # 25 years data
             }
             buffer += str(json.dumps(indexPattern) + "\n")
             buffer += str(json.dumps(data) + '\n')
-            #print(buffer)
+            print(buffer)
 
         isIdExist = requests.get(
             url=url + "/" + indexPattern['index']['_index'] + "/_doc/" + data['@timestamp'].replace("+", "%2B"),
             auth=(os.environ['es_user'], os.environ['es_pass']))
-        print(isIdExist.content)
         if isIdExist.status_code == 200:
             print("data already exist with id")
             updateStatus = requests.post(
