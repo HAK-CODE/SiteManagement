@@ -89,11 +89,12 @@ for i in range(1, 20):  # 25 years data
             }
             buffer += str(json.dumps(indexPattern) + "\n")
             buffer += str(json.dumps(data) + '\n')
-            print(buffer)
+            #print(buffer)
 
         isIdExist = requests.get(
             url=url + "/" + indexPattern['index']['_index'] + "/_doc/" + data['@timestamp'].replace("+", "%2B"),
             auth=(os.environ['es_user'], os.environ['es_pass']))
+        print(isIdExist.content)
         if isIdExist.status_code == 200:
             print("data already exist with id")
             updateStatus = requests.post(
