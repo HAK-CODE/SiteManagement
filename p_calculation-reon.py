@@ -50,7 +50,7 @@ start_year = datee.year
 bit = 0
 dgr = 1
 url = os.environ['es_url']
-for i in range(1, 26):  # 25 years data
+for i in range(1, 20):  # 25 years data
     print("DGR:" + str(dgr))
     for j in range(1, 13):
         indexPattern = {"index": {"_index": None, "_id": None}}
@@ -80,7 +80,7 @@ for i in range(1, 26):  # 25 years data
             indexPattern['index']['_index'] = siteTag+timestamp
             format = datetime.datetime.strptime(str(str(start_year) + "-" + str(months) + "-" + str(k)), "%Y-%m-%d")
             format = str(format).replace(" ","T")+"+05:00"
-            indexPattern['index']['_id'] = format
+            indexPattern['index']['_id'] = "site-ktml-pvalues"
             data = {
                 "@timestamp": format,
                 "p50": p50,
