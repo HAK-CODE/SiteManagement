@@ -243,7 +243,8 @@ def calInsulation(sizeTag):
 
 def getNOW(tag):
     yesterday = date.today() - timedelta(1)
-    return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
+    #return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
+    return str("site-" + tag + "-" + str("2019.4.2"))
 
 
 def runThis():
