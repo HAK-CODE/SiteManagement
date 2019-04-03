@@ -243,8 +243,7 @@ def calInsulation(sizeTag):
 
 def getNOW(tag):
     yesterday = date.today() - timedelta(1)
-    #return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
-    return str("site-" + tag + "-" + str("2019.4.2"))
+    return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
 
 
 def runThis():
@@ -254,11 +253,9 @@ def runThis():
     for tag in json.loads(tags.text)['response']:
         calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size'])})
 
-# sched = BackgroundScheduler()
-# sched.add_job(runThis, trigger='cron', hour=3, minute=30)
-# sched.start()
-#
-# while True:
-#     time.sleep(30)
+sched = BackgroundScheduler()
+sched.add_job(runThis, trigger='cron', hour=3, minute=30)
+sched.start()
 
-runThis()
+while True:
+    time.sleep(30)
