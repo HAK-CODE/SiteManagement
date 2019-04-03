@@ -117,7 +117,7 @@ def calInsulation(sizeTag):
                           "query": {
                               "match_all": {}
                           },
-                          "size": 200,
+                          "size": 350,
                           "sort": [
                               {
                                   "@timestamp": {
@@ -158,7 +158,7 @@ def calInsulation(sizeTag):
             "query": {
                 "match_all": {}
             },
-            "size": 200,
+            "size": 350,
             "sort": [
                 {
                     "@timestamp": {
@@ -253,9 +253,11 @@ def runThis():
     for tag in json.loads(tags.text)['response']:
         calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size'])})
 
-sched = BackgroundScheduler()
-sched.add_job(runThis, trigger='cron', hour=3, minute=30)
-sched.start()
+# sched = BackgroundScheduler()
+# sched.add_job(runThis, trigger='cron', hour=3, minute=30)
+# sched.start()
+#
+# while True:
+#     time.sleep(30)
 
-while True:
-    time.sleep(30)
+runThis()
