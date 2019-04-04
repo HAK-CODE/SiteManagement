@@ -192,6 +192,31 @@ def calInsulation(sizeTag):
     print("day energy "+str(forPrcalculation))
     print(type(insulation))
     print(type(sizeTag['size']))
+
+    p90_value = requests.get(
+        url=url + "/" + sizeTag['tag'] + "/_search",
+        auth=(os.environ['es_user'], os.environ['es_pass']),
+        json={
+            "_source": ["p90"],
+            "query": {
+                "match_all": {}
+            },
+            "size": 1,
+            "sort": [
+                {
+                    "@timestamp": {
+                        "order": "asc"
+                    }
+                }
+            ]
+        })
+
+    p90_value = json.loads(p90_value)['hits']['hits'][0]['p90']
+
+    deviation = (forPrcalculation - p90_value)/p90_value
+
+    Yield = forPrcalculation/sizeTag['size']
+
     pr_ratio = (forPrcalculation)/(insulation * sizeTag['size']) * 100
 
     print("ratio is "+str(pr_ratio))
@@ -215,6 +240,8 @@ def calInsulation(sizeTag):
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
     buffer += str(json.dumps({"insulation": {"value": insulation, "unit": "KW/m^2"},
                               "pr-ratio": {"value": pr_ratio if pr_ratio <=100 else 100, "unit": "%"},
+                              "yield":{"value": Yield, "unit": "kWh/kWp"},
+                              "deviation":{"value": deviation},
                               "DAY_CALCULATION": forPrcalculation,
                               "@timestamp": _id}) + "\n")
     isIdExist = requests.get(url= url + "/" + indice + "/_doc/" + _id.replace("+", "%2B"),
