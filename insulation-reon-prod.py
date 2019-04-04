@@ -211,9 +211,10 @@ def calInsulation(sizeTag):
             ]
         })
 
-    p90_value = json.loads(p90_value)['hits']['hits'][0]['p90']
-
-    deviation = (forPrcalculation - p90_value)/p90_value
+    deviation = None
+    if len(json.loads(p90_value)['hits']['hits']) is not 0:
+        p90_value = json.loads(p90_value)['hits']['hits'][0]['p90']
+        deviation = (forPrcalculation - p90_value)/p90_value
 
     Yield = forPrcalculation/sizeTag['size']
 
