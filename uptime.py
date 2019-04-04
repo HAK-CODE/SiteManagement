@@ -145,12 +145,12 @@ def runThis():
     calIrradianceUpTime(getNOW(), first_tag, second_tag)
 
 
-# runThis()
+runThis()
 
-sched = BackgroundScheduler()
-sched.add_job(runThis, trigger='cron', hour=0, minute=9)
-sched.start()
-
-while True:
-    time.sleep(30)
+# sched = BackgroundScheduler()
+# sched.add_job(runThis, trigger='cron', hour=0, minute=9)
+# sched.start()
+#
+# while True:
+#     time.sleep(30)
 # print (getNOW())
