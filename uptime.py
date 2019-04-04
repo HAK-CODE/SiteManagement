@@ -40,7 +40,7 @@ def calIrradianceUpTime(index, first_tag, second_tag):
         })
 
     res = json.loads(data.text)
-    print (res)
+    #print (res)
     _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
     _id = datetime.strptime(_id, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
     timeDiff = 0
@@ -51,6 +51,8 @@ def calIrradianceUpTime(index, first_tag, second_tag):
     first_tag = first_tag.split(".")
     second_tag = second_tag.split(".")
 
+    print(first_tag)
+    print(second_tag)
     for i, v in enumerate(res['hits']['hits']):
         if i + 1 <= len(res['hits']['hits']) - 1:
             if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
