@@ -254,6 +254,8 @@ def calInsulation(sizeTag):
                                      auth=(os.environ['es_user'], os.environ['es_pass']),
                                      json={"insulation": {"value": insulation, "unit": "KW/m^2"},
                                            "pr-ratio": {"value": pr_ratio if pr_ratio <=100 else 100, "unit": "%"},
+                                           "yield": {"value": Yield, "unit": "kWh/kWp"},
+                                           "deviation": {"value": deviation},
                                            "DAY_CALCULATION": forPrcalculation,
                                            "@timestamp": _id})
         print(updateStatus.content)
