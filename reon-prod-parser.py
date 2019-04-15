@@ -183,7 +183,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 if objectRecieved['db']['siteConfig']['csv'][k]['applyOperation']:
                                     v = (v / objectRecieved['db']['siteConfig']['csv'][k]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][k]['offset']
                             innerDict[k] = v
-                    builder['logger'] = innerDict
+                    builder[objectRecieved['db']['siteConfig']['siteInfo']['siteTag']] = innerDict
                     builder['siteName'] = objectRecieved['db']['siteConfig']['siteInfo']['siteName']
                     save.append(builder)
                 es.loadData(save)
