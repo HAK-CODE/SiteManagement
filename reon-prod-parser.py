@@ -151,14 +151,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  header=0,
                                  engine='python')
 
-                if len(df.columns) == 0:
-                    print("now columns")
-                    df = pd.read_csv(objectRecieved['fileReceived'],
-                                     sep=';',
-                                     header=0,
-                                     engine='python')
+                print(df.columns)
 
-                print("length is "+str(len(df.columns)))
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
                 df.dropna(axis='columns', inplace=True)
