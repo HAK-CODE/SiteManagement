@@ -158,6 +158,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                      header=0,
                                      engine='python')
 
+                print("length is "+str(len(df.columns)))
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
                 df.dropna(axis='columns', inplace=True)
