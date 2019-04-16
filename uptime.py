@@ -17,11 +17,12 @@ def getDIfferenceMin(d1, d2):
     return {"status": int(round(td.total_seconds() / 60)) <= 15, "value": int(round(td.total_seconds() / 60))}
 
 
-def calIrradianceUpTime(index, first_tag, second_tag):
+def calIrradianceUpTime(index_half, first_tag, second_tag,sites_list_inv_qty,site_name):
+    index = site_name+index_half
     url = os.environ['es_url']
     list_tags = [first_tag, second_tag, "@timestamp"]
-    inv_pow = [0] * 14
-    for i in range(1, 15):
+    inv_pow = [0] * sites_list_inv_qty
+    for i in range(1, sites_list_inv_qty+1):
         list_tags.append("logger.INV" + str(i) + "-W")
     # print (list_tags)
 
@@ -73,7 +74,7 @@ def calIrradianceUpTime(index, first_tag, second_tag):
                     if (invUP > 0):
                         InverterUpTime += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
 
-                    for z in range(14):
+                    for z in range(sites_list_inv_qty):
                         try:
                             invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]]["INV" + str(z + 1) + "-W"]
                         except Exception:
@@ -86,7 +87,7 @@ def calIrradianceUpTime(index, first_tag, second_tag):
             # prev_value = res['hits']['hits'][i + 1]['_source']['first_tag[0]'][first_tag[1]]
             timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
 
-    indice = str(index).split("-")[0].lower() + "-"+index[5:9] + "-ir-up_time"+index[9:] 
+    indice = site_name + "ir-up_time"+"-"+index_half 
     isCreated = requests.get(url=url+"/" + indice, auth=(os.environ['es_user'], os.environ['es_pass']))
     print("indice pattern is " + indice)
     
@@ -114,7 +115,7 @@ def calIrradianceUpTime(index, first_tag, second_tag):
         y += 1
 
     buffer += str(json.dumps(json_temp) + "\n")
-    #print (buffer)
+    print (buffer)
     
     isIdExist = requests.get(url=url+"/" + indice + "/_doc/" + _id.replace("+", "%2B"), auth=(os.environ['es_user'], os.environ['es_pass']))
     if isIdExist.status_code == 200:
@@ -146,7 +147,7 @@ def calIrradianceUpTime(index, first_tag, second_tag):
 
 def getNOW():
     yesterday = date.today() - timedelta(1)
-    return str("site-ktml-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
+    return str(str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
     # return "ktml-2019.3.1"
 
 
@@ -159,9 +160,28 @@ second_tag = "logger.PSolar"
 
 
 # print (getNOW())
-def runThis():
-    calIrradianceUpTime(getNOW(), first_tag, second_tag)
+sites_list = ["site-ktml-","site-enter-","site-dairy-"]#,"site-ser-"]
+sites_list_inv_qty = [14,16,10]
 
+def runThis():
+    b=0
+    for a in sites_list:
+        """ if (f=="site-ser-"):
+            first_tag = "logger.MET-GHI"
+            second_tag = "logger.PSolar"
+        else:
+            first_tag = "logger.MET-GHI"
+            second_tag = "logger.PSolar" """
+        try:
+            #site_index = a + getNOW() 
+            calIrradianceUpTime(getNOW(), first_tag, second_tag,sites_list_inv_qty[b],a)
+            print (sites_list_inv_qty[b])
+            b+=1
+            print ("successfull")
+        except Exception:
+            b+=1
+            print ("filed to load")
+            pass
 
 #runThis()
 
