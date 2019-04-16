@@ -112,7 +112,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     del buffDict['Timestamp']
                     type = buffDict['type']
                     del buffDict['type']
-                    es.loadData({"@timestamp": buffDict["@timestamp"], "type":type, type:buffDict})
+                    es.loadData({"@timestamp": buffDict["@timestamp"], "type":type, objectRecieved['db']['siteConfig']['siteInfo']['siteTag']:buffDict})
 
                     CheckOldData()
 
