@@ -175,6 +175,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     innerDict = {}
                     builder['@timestamp'] = index
                     builder['type'] = "logger"
+                    builder['siteTag'] = objectRecieved['db']['siteConfig']['siteInfo']['siteTag']
                     for k, v in j.iteritems():
                         if type(v) is int or type(v) is float or v is None and v is not np.nan:
                             if k in objectRecieved['db']['siteConfig']['csv']:
