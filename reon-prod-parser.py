@@ -152,6 +152,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  engine='python')
 
                 if len(df.columns) == 0:
+                    print("now columns")
                     df = pd.read_csv(objectRecieved['fileReceived'],
                                      sep=';',
                                      header=0,
