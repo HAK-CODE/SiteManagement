@@ -150,6 +150,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  sep='\s*,\s*',
                                  header=0,
                                  engine='python')
+
+                if len(df.columns) == 0:
+                    df = pd.read_csv(objectRecieved['fileReceived'],
+                                     sep=';',
+                                     header=0,
+                                     engine='python')
+
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
                 df.dropna(axis='columns', inplace=True)
