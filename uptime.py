@@ -58,15 +58,27 @@ def calIrradianceUpTime(index, first_tag, second_tag):
             if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                 IrradianceUpTime += 0
             else:
-                irrad = res['hits']['hits'][i + 1]['_source'][first_tag[0]][first_tag[1]]
+                try:
+                    irrad = res['hits']['hits'][i + 1]['_source'][first_tag[0]][first_tag[1]]
+                except Exception:
+                    irrad = 0
+                    pass
                 if (irrad > 50):
                     IrradianceUpTime += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
-                    invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]][second_tag[1]]
+                    try:
+                        invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]][second_tag[1]]
+                    except Exception:
+                        invUP=0
+                        pass
                     if (invUP > 0):
                         InverterUpTime += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
 
                     for z in range(14):
-                        invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]]["INV" + str(z + 1) + "-W"]
+                        try:
+                            invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]]["INV" + str(z + 1) + "-W"]
+                        except Exception:
+                            invUP=0
+                            pass
 
                         if (invUP > 0):
                             inv_pow[z] += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
@@ -74,10 +86,10 @@ def calIrradianceUpTime(index, first_tag, second_tag):
             # prev_value = res['hits']['hits'][i + 1]['_source']['first_tag[0]'][first_tag[1]]
             timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
 
-    indice = "site-"+str(index).split("-")[0].lower() + "-ir.up_time." + index[5:]
+    indice = str(index).split("-")[0].lower() + "-"+index[5:9] + "-ir-up_time"+index[9:] 
     isCreated = requests.get(url=url+"/" + indice, auth=(os.environ['es_user'], os.environ['es_pass']))
-    # print("indice pattern is " + indice)
-
+    print("indice pattern is " + indice)
+    
     if isCreated.status_code != 200:
         createdIndice = requests.put(
             url=url+"/" + indice, auth=(os.environ['es_user'], os.environ['es_pass']))
@@ -86,10 +98,14 @@ def calIrradianceUpTime(index, first_tag, second_tag):
     elif isCreated.status_code == 200:
         print("indice already created")
 
+    Uptime_Perc = round(InverterUpTime/IrradianceUpTime*100,2)
+    if (Uptime_Perc>100):
+        Uptime_Perc=100
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
     json_temp = {"IrradianceUpTime": {"IrradianceUpTime": IrradianceUpTime, "unit": "Mins"},
-                 "InvertersUpTime": {"All_InverterUpTime": InverterUpTime, "unit": "Mins"}, "@timestamp": _id}
+                 "InvertersUpTime": {"All_InverterUpTime": InverterUpTime, "unit": "Mins"},
+                 "UpTimePerc": {"InverterUpTime_Perc": Uptime_Perc, "unit": "%"}, "@timestamp": _id}
     # json_temp.update({"InverterUpTime1": {"InverterUpTime1": InverterUpTime, "unit": "Mins"}})
 
     y = 1
@@ -98,8 +114,8 @@ def calIrradianceUpTime(index, first_tag, second_tag):
         y += 1
 
     buffer += str(json.dumps(json_temp) + "\n")
-    # print (buffer)
-
+    #print (buffer)
+    
     isIdExist = requests.get(url=url+"/" + indice + "/_doc/" + _id.replace("+", "%2B"), auth=(os.environ['es_user'], os.environ['es_pass']))
     if isIdExist.status_code == 200:
         print("data already exist with id")
@@ -147,12 +163,12 @@ def runThis():
     calIrradianceUpTime(getNOW(), first_tag, second_tag)
 
 
-runThis()
+#runThis()
 
-# sched = BackgroundScheduler()
-# sched.add_job(runThis, trigger='cron', hour=0, minute=9)
-# sched.start()
-#
-# while True:
-#     time.sleep(30)
-# print (getNOW())
+sched = BackgroundScheduler()
+sched.add_job(runThis, trigger='cron', hour=0, minute=30)
+sched.start()
+
+while True:
+    time.sleep(30)
+    #print (getNOW())
