@@ -19,6 +19,8 @@ def getDIfferenceMin(d1, d2):
 def calInsulation(sizeTag):
     print(sizeTag['tag'])
     print(sizeTag['size'])
+    tagSite = sizeTag['tag'].split('-')[1].upper()
+    print(tagSite)
     url = os.environ['es_url']
     data = requests.post(
         url=url + "/" + sizeTag['tag'] + "/_search",
@@ -70,10 +72,10 @@ def calInsulation(sizeTag):
             url= url + "/" + sizeTag['tag'] + "/_search",
             auth=(os.environ['es_user'], os.environ['es_pass']),
             json={
-                "_source": ["logger.MET-GHI", "@timestamp"],
+                "_source": [tagSite+".MET-GHI", "@timestamp"],
                 "size": 10000,
                 "query": {
-                    "exists": {"field": "logger.MET-GHI"}
+                    "exists": {"field": tagSite+".MET-GHI"}
                 },
                 "sort": [
                     {"@timestamp": "asc"}
@@ -89,22 +91,22 @@ def calInsulation(sizeTag):
         prev_value = 0
         insulation = 0
         timeDiff = res['hits']['hits'][0]['_source']['@timestamp']
-        prev_value = res['hits']['hits'][0]['_source']['logger']['MET-GHI']
-        insulation += 0.5 * (res['hits']['hits'][0]['_source']['logger']['MET-GHI'] + 0) * 0
+        prev_value = res['hits']['hits'][0]['_source'][tagSite]['MET-GHI']
+        insulation += 0.5 * (res['hits']['hits'][0]['_source'][tagSite]['MET-GHI'] + 0) * 0
         for i, v in enumerate(res['hits']['hits']):
             if i + 1 <= len(res['hits']['hits']) - 1:
                 if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                     insulation += 0
                 else:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
-                prev_value = res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][tagSite]['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                prev_value = res['hits']['hits'][i + 1]['_source'][tagSite]['MET-GHI']
                 timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
                 if i + 1 == len(res['hits']['hits']) - 1:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][tagSite]['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
                     if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                         insulation += 0
                     else:
-                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['logger']['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][tagSite]['MET-GHI'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
 
     insulation = insulation/60000
 
@@ -113,7 +115,7 @@ def calInsulation(sizeTag):
     X1 = requests.get(url=url + "/" + sizeTag['tag'] +"/_search",
                       auth=(os.environ['es_user'], os.environ['es_pass']),
                       json= {
-                          "_source": ["inverter.TOTAL_ENERGY.sum","logger.EtSolar"],
+                          "_source": ["inverter.TOTAL_ENERGY.sum", tagSite+".EtSolar"],
                           "query": {
                               "match_all": {}
                           },
@@ -131,7 +133,7 @@ def calInsulation(sizeTag):
     flag_x1 = False
     for entry in X1:
         for key,value in entry['_source'].items():
-            if key == 'logger':
+            if key == tagSite:
                 print("value is "+str(value['EtSolar']))
                 if value['EtSolar'] != 0:
                     print("value not 0")
@@ -154,7 +156,7 @@ def calInsulation(sizeTag):
         url= url + "/" + sizeTag['tag'] + "/_search",
         auth=(os.environ['es_user'], os.environ['es_pass']),
         json={
-            "_source": ["inverter.TOTAL_ENERGY.sum", "logger.EtSolar"],
+            "_source": ["inverter.TOTAL_ENERGY.sum", tagSite+".EtSolar"],
             "query": {
                 "match_all": {}
             },
@@ -172,7 +174,7 @@ def calInsulation(sizeTag):
 
     for entry in X2:
         for key, value in entry['_source'].items():
-            if key == 'logger':
+            if key == tagSite:
                 if value['EtSolar'] != 0:
                     x2_val = value['EtSolar']
                     flag_x2 = True
