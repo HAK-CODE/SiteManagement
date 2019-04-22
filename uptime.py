@@ -17,11 +17,12 @@ def getDIfferenceMin(d1, d2):
     return {"status": int(round(td.total_seconds() / 60)) <= 15, "value": int(round(td.total_seconds() / 60))}
 
 
-def calIrradianceUpTime(index, first_tag, second_tag):
+def calIrradianceUpTime(index_half, first_tag, second_tag,sites_list_inv_qty,site_name):
+    index = site_name+index_half
     url = os.environ['es_url']
     list_tags = [first_tag, second_tag, "@timestamp"]
-    inv_pow = [0] * 14
-    for i in range(1, 15):
+    inv_pow = [0] * sites_list_inv_qty
+    for i in range(1, sites_list_inv_qty+1):
         list_tags.append("logger.INV" + str(i) + "-W")
     # print (list_tags)
 
@@ -58,15 +59,27 @@ def calIrradianceUpTime(index, first_tag, second_tag):
             if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                 IrradianceUpTime += 0
             else:
-                irrad = res['hits']['hits'][i + 1]['_source'][first_tag[0]][first_tag[1]]
+                try:
+                    irrad = res['hits']['hits'][i + 1]['_source'][first_tag[0]][first_tag[1]]
+                except Exception:
+                    irrad = 0
+                    pass
                 if (irrad > 50):
                     IrradianceUpTime += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
-                    invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]][second_tag[1]]
+                    try:
+                        invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]][second_tag[1]]
+                    except Exception:
+                        invUP=0
+                        pass
                     if (invUP > 0):
                         InverterUpTime += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
 
-                    for z in range(14):
-                        invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]]["INV" + str(z + 1) + "-W"]
+                    for z in range(sites_list_inv_qty):
+                        try:
+                            invUP = res['hits']['hits'][i + 1]['_source'][second_tag[0]]["INV" + str(z + 1) + "-W"]
+                        except Exception:
+                            invUP=0
+                            pass
 
                         if (invUP > 0):
                             inv_pow[z] += getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
@@ -74,10 +87,10 @@ def calIrradianceUpTime(index, first_tag, second_tag):
             # prev_value = res['hits']['hits'][i + 1]['_source']['first_tag[0]'][first_tag[1]]
             timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
 
-    indice = "site-"+str(index).split("-")[0].lower() + "-ir.up_time." + index[5:]
+    indice = site_name + "ir-up_time"+"-"+index_half 
     isCreated = requests.get(url=url+"/" + indice, auth=(os.environ['es_user'], os.environ['es_pass']))
-    # print("indice pattern is " + indice)
-
+    print("indice pattern is " + indice)
+    
     if isCreated.status_code != 200:
         createdIndice = requests.put(
             url=url+"/" + indice, auth=(os.environ['es_user'], os.environ['es_pass']))
@@ -86,10 +99,14 @@ def calIrradianceUpTime(index, first_tag, second_tag):
     elif isCreated.status_code == 200:
         print("indice already created")
 
+    Uptime_Perc = round(InverterUpTime/IrradianceUpTime*100,2)
+    if (Uptime_Perc>100):
+        Uptime_Perc=100
     buffer = ""
     buffer += str(json.dumps({"index": {"_index": indice, "_id": _id}}) + "\n")
     json_temp = {"IrradianceUpTime": {"IrradianceUpTime": IrradianceUpTime, "unit": "Mins"},
-                 "InvertersUpTime": {"All_InverterUpTime": InverterUpTime, "unit": "Mins"}, "@timestamp": _id}
+                 "InvertersUpTime": {"All_InverterUpTime": InverterUpTime, "unit": "Mins"},
+                 "UpTimePerc": {"InverterUpTime_Perc": Uptime_Perc, "unit": "%"}, "@timestamp": _id}
     # json_temp.update({"InverterUpTime1": {"InverterUpTime1": InverterUpTime, "unit": "Mins"}})
 
     y = 1
@@ -98,8 +115,8 @@ def calIrradianceUpTime(index, first_tag, second_tag):
         y += 1
 
     buffer += str(json.dumps(json_temp) + "\n")
-    # print (buffer)
-
+    print (buffer)
+    
     isIdExist = requests.get(url=url+"/" + indice + "/_doc/" + _id.replace("+", "%2B"), auth=(os.environ['es_user'], os.environ['es_pass']))
     if isIdExist.status_code == 200:
         print("data already exist with id")
@@ -130,7 +147,7 @@ def calIrradianceUpTime(index, first_tag, second_tag):
 
 def getNOW():
     yesterday = date.today() - timedelta(1)
-    return str("site-ktml-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
+    return str(str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
     # return "ktml-2019.3.1"
 
 
@@ -143,16 +160,35 @@ second_tag = "logger.PSolar"
 
 
 # print (getNOW())
+sites_list = ["site-ktml-","site-enter-","site-dairy-"]#,"site-ser-"]
+sites_list_inv_qty = [14,16,10]
+
 def runThis():
-    calIrradianceUpTime(getNOW(), first_tag, second_tag)
+    b=0
+    for a in sites_list:
+        """ if (f=="site-ser-"):
+            first_tag = "logger.MET-GHI"
+            second_tag = "logger.PSolar"
+        else:
+            first_tag = "logger.MET-GHI"
+            second_tag = "logger.PSolar" """
+        try:
+            #site_index = a + getNOW() 
+            calIrradianceUpTime(getNOW(), first_tag, second_tag,sites_list_inv_qty[b],a)
+            print (sites_list_inv_qty[b])
+            b+=1
+            print ("successfull")
+        except Exception:
+            b+=1
+            print ("filed to load")
+            pass
 
+#runThis()
 
-runThis()
+sched = BackgroundScheduler()
+sched.add_job(runThis, trigger='cron', hour=0, minute=30)
+sched.start()
 
-# sched = BackgroundScheduler()
-# sched.add_job(runThis, trigger='cron', hour=0, minute=9)
-# sched.start()
-#
-# while True:
-#     time.sleep(30)
-# print (getNOW())
+while True:
+    time.sleep(30)
+    #print (getNOW())
