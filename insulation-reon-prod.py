@@ -19,6 +19,7 @@ def getDIfferenceMin(d1, d2):
 def calInsulation(sizeTag):
     print(sizeTag['tag'])
     print(sizeTag['size'])
+    print(sizeTag['name'])
     tagSite = sizeTag['tag'].split('-')[1].upper()
     print(tagSite)
     url = os.environ['es_url']
@@ -246,6 +247,7 @@ def calInsulation(sizeTag):
                               "yield":{"value": Yield, "unit": "kWh/kWp"},
                               "deviation":{"value": deviation},
                               "DAY_CALCULATION": forPrcalculation,
+                              "siteName": sizeTag['siteName'],
                               "@timestamp": _id}) + "\n")
     isIdExist = requests.get(url= url + "/" + indice + "/_doc/" + _id.replace("+", "%2B"),
                              auth=(os.environ['es_user'], os.environ['es_pass']))
@@ -259,6 +261,7 @@ def calInsulation(sizeTag):
                                            "yield": {"value": Yield, "unit": "kWh/kWp"},
                                            "deviation": {"value": deviation},
                                            "DAY_CALCULATION": forPrcalculation,
+                                           "siteName": sizeTag['siteName'],
                                            "@timestamp": _id})
         print(updateStatus.content)
     else:
@@ -284,7 +287,7 @@ def runThis():
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
     for tag in json.loads(tags.text)['response']:
-        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size'])})
+        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=3, minute=30)
