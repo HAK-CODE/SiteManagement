@@ -230,11 +230,12 @@ def calInsulation(sizeTag):
 
     deviation = None
 
-    print("deviation has len "+str(len(json.loads(p90_value.text)['hits']['hits'][0]['_source'])))
+    print("deviation has "+str(p90_value.status_code))
 
-    if len(json.loads(p90_value.text)['hits']['hits'][0]['_source']) != 0:
-        p90_value = json.loads(p90_value.text)['hits']['hits'][0]['_source']['p90']
-        deviation = ((forPrcalculation - p90_value)/p90_value) * 100
+    if p90_value.status_code == 200:
+        if len(json.loads(p90_value.text)['hits']['hits'][0]['_source']) != 0:
+            p90_value = json.loads(p90_value.text)['hits']['hits'][0]['_source']['p90']
+            deviation = ((forPrcalculation - p90_value)/p90_value) * 100
 
 
     Yield = forPrcalculation/sizeTag['size']
