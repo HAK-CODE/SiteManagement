@@ -140,18 +140,19 @@ def calInsulation(sizeTag):
     flag_x1 = False
     for entry in X1:
         for key,value in entry['_source'].items():
-            if key == tagSite and 'EtSolar' in value[tagSite]:
-                print("Etsolar is value is "+str(value[tagSite]['EtSolar']))
-                if value['EtSolar'] != 0:
-                    x1_val = value[tagSite]['EtSolar']
-                    flag_x1 = True
-                    break
-            else:
-                print("TOTAL_ENERGY value is " + str(value[tagSite]['TOTAL_ENERGY']['sum']))
-                if value['TOTAL_ENERGY']['sum'] != 0:
-                    x1_val = value['TOTAL_ENERGY']['sum']
-                    flag_x1 = True
-                    break
+            if key == tagSite:
+                if 'EtSolar' in value[tagSite]:
+                    print("Etsolar is value is "+str(value[tagSite]['EtSolar']))
+                    if value['EtSolar'] != 0:
+                        x1_val = value[tagSite]['EtSolar']
+                        flag_x1 = True
+                        break
+                else:
+                    print("TOTAL_ENERGY value is " + str(value[tagSite]['TOTAL_ENERGY']['sum']))
+                    if value['TOTAL_ENERGY']['sum'] != 0:
+                        x1_val = value['TOTAL_ENERGY']['sum']
+                        flag_x1 = True
+                        break
 
         if flag_x1:
             break
@@ -179,16 +180,17 @@ def calInsulation(sizeTag):
 
     for entry in X2:
         for key, value in entry['_source'].items():
-            if key == tagSite and 'EtSolar' in value[tagSite]:
-                if value['EtSolar'] != 0:
-                    x2_val = value[tagSite]['EtSolar']
-                    flag_x2 = True
-                    break
-            else:
-                if value['TOTAL_ENERGY']['sum'] != 0:
-                    x2_val = value[tagSite]['TOTAL_ENERGY']['sum']
-                    flag_x2 = True
-                    break
+            if key == tagSite:
+                if 'EtSolar' in value[tagSite]:
+                    if value['EtSolar'] != 0:
+                        x2_val = value[tagSite]['EtSolar']
+                        flag_x2 = True
+                        break
+                else:
+                    if value['TOTAL_ENERGY']['sum'] != 0:
+                        x2_val = value[tagSite]['TOTAL_ENERGY']['sum']
+                        flag_x2 = True
+                        break
         if flag_x2:
             break
 
