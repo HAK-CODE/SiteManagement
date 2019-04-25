@@ -4,6 +4,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import time
 import requests
 import os
+os.environ['es_user'] = "elastic"
+os.environ['es_pass'] = "vtxpLVlnMSGpxazuNh0YiQ31"
+os.environ['es_url'] = "https://06dcca1d13df4e6cba68aa0a4bfcf0dc.ap-southeast-1.aws.found.io:9243"
 
 
 def getDIfferenceMin(d1, d2):
@@ -200,28 +203,39 @@ def calInsulation(sizeTag):
 
     print("day energy "+str(forPrcalculation))
 
+
+
     p90_value = requests.get(
-        url=url + "/" + sizeTag['tag'] + "/_search",
+        url=url + "/" + tagSite + "/_search",
         auth=(os.environ['es_user'], os.environ['es_pass']),
         json={
             "_source": ["p90"],
+            "size": 10,
             "query": {
-                "match_all": {}
-            },
-            "size": 1,
-            "sort": [
-                {
-                    "@timestamp": {
-                        "order": "asc"
-                    }
+                "bool": {
+                    "must": [
+                        {
+                            "range": {
+                                "@timestamp": {
+                                    "format": "strict_date_optional_time",
+                                    "gte": sizeTag['tag'].split('-')[-1],
+                                    "lte": sizeTag['tag'].split('-')[-1]
+                                }
+                            }
+                        }
+                    ]
                 }
-            ]
+            }
         })
 
     deviation = None
+
+    print("deviation has len "+str(len(json.loads(p90_value.text)['hits']['hits'][0]['_source'])))
+
     if len(json.loads(p90_value.text)['hits']['hits'][0]['_source']) != 0:
         p90_value = json.loads(p90_value.text)['hits']['hits'][0]['_source']['p90']
         deviation = ((forPrcalculation - p90_value)/p90_value) * 100
+
 
     Yield = forPrcalculation/sizeTag['size']
 
