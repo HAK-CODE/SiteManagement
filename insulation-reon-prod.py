@@ -141,6 +141,8 @@ def calInsulation(sizeTag):
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == tagSite:
+                print(key)
+                print(value)
                 if 'EtSolar' in value[tagSite]:
                     print("Etsolar is value is "+str(value[tagSite]['EtSolar']))
                     if value['EtSolar'] != 0:
@@ -181,6 +183,8 @@ def calInsulation(sizeTag):
     for entry in X2:
         for key, value in entry['_source'].items():
             if key == tagSite:
+                print(key)
+                print(value)
                 if 'EtSolar' in value[tagSite]:
                     if value['EtSolar'] != 0:
                         x2_val = value[tagSite]['EtSolar']
