@@ -122,7 +122,7 @@ def calInsulation(sizeTag):
     X1 = requests.get(url=url + "/" + sizeTag['tag'] +"/_search",
                       auth=(os.environ['es_user'], os.environ['es_pass']),
                       json= {
-                          "_source": ["inverter.TOTAL_ENERGY.sum", tagSite+".EtSolar"],
+                          "_source": [tagSite+".TOTAL_ENERGY.sum", tagSite+".EtSolar"],
                           "query": {
                               "match_all": {}
                           },
@@ -141,16 +141,14 @@ def calInsulation(sizeTag):
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == tagSite:
-                print("value is "+str(value['EtSolar']))
+                print("Etsolar is value is "+str(value['EtSolar']))
                 if value['EtSolar'] != 0:
-                    print("value not 0")
                     x1_val = value['EtSolar']
                     flag_x1 = True
                     break
             else:
-                print("value is " + str(value['TOTAL_ENERGY']['sum']))
+                print("TOTAL_ENERGY value is " + str(value['TOTAL_ENERGY']['sum']))
                 if value['TOTAL_ENERGY']['sum'] != 0:
-                    print("value not 0")
                     x1_val = value['TOTAL_ENERGY']['sum']
                     flag_x1 = True
                     break
@@ -163,7 +161,7 @@ def calInsulation(sizeTag):
         url= url + "/" + sizeTag['tag'] + "/_search",
         auth=(os.environ['es_user'], os.environ['es_pass']),
         json={
-            "_source": ["inverter.TOTAL_ENERGY.sum", tagSite+".EtSolar"],
+            "_source": [tagSite+".TOTAL_ENERGY.sum", tagSite+".EtSolar"],
             "query": {
                 "match_all": {}
             },
