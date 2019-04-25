@@ -141,13 +141,13 @@ def calInsulation(sizeTag):
     for entry in X1:
         for key,value in entry['_source'].items():
             if key == tagSite:
-                print("Etsolar is value is "+str(value['EtSolar']))
+                print("Etsolar is value is "+str(value[tagSite]['EtSolar']))
                 if value['EtSolar'] != 0:
-                    x1_val = value['EtSolar']
+                    x1_val = value[tagSite]['EtSolar']
                     flag_x1 = True
                     break
             else:
-                print("TOTAL_ENERGY value is " + str(value['TOTAL_ENERGY']['sum']))
+                print("TOTAL_ENERGY value is " + str(value[tagSite]['TOTAL_ENERGY']['sum']))
                 if value['TOTAL_ENERGY']['sum'] != 0:
                     x1_val = value['TOTAL_ENERGY']['sum']
                     flag_x1 = True
@@ -181,12 +181,12 @@ def calInsulation(sizeTag):
         for key, value in entry['_source'].items():
             if key == tagSite:
                 if value['EtSolar'] != 0:
-                    x2_val = value['EtSolar']
+                    x2_val = value[tagSite]['EtSolar']
                     flag_x2 = True
                     break
             else:
                 if value['TOTAL_ENERGY']['sum'] != 0:
-                    x2_val = value['TOTAL_ENERGY']['sum']
+                    x2_val = value[tagSite]['TOTAL_ENERGY']['sum']
                     flag_x2 = True
                     break
         if flag_x2:
@@ -303,7 +303,7 @@ def runThis():
     print("starting")
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
-    for i in range(1,25):
+    for i in range(16,25):
         for tag in json.loads(tags.text)['response']:
             calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
 
