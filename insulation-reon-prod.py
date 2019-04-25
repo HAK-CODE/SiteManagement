@@ -27,10 +27,10 @@ def calInsulation(sizeTag):
         url=url + "/" + sizeTag['tag'] + "/_search",
         auth=(os.environ['es_user'], os.environ['es_pass']),
         json={
-            "_source": ["sensor.2", "@timestamp"],
+            "_source": [sizeTag['tag']+".2", "@timestamp"],
             "size": 10000,
             "query": {
-                "exists": {"field": "sensor.2"}
+                "exists": {"field": sizeTag['tag']+".2"}
             },
             "sort": [
                 {"@timestamp": "asc"}
@@ -50,23 +50,23 @@ def calInsulation(sizeTag):
         prev_value = 0
         insulation = 0
         timeDiff = res['hits']['hits'][0]['_source']['@timestamp']
-        prev_value = res['hits']['hits'][0]['_source']['sensor']['2']
-        insulation += 0.5 * (res['hits']['hits'][0]['_source']['sensor']['2'] + 0) * 0
+        prev_value = res['hits']['hits'][0]['_source'][sizeTag['tag']]['2']
+        insulation += 0.5 * (res['hits']['hits'][0]['_source'][sizeTag['tag']]['2'] + 0) * 0
 
         for i, v in enumerate(res['hits']['hits']):
             if i + 1 <= len(res['hits']['hits']) - 1:
                 if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                     insulation += 0
                 else:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
-                prev_value = res['hits']['hits'][i + 1]['_source']['sensor']['2']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                prev_value = res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2']
                 timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
                 if i + 1 == len(res['hits']['hits']) - 1:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
                     if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                         insulation += 0
                     else:
-                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source']['sensor']['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
     else:
         print("using MET-GHI")
         data = requests.post(
@@ -276,9 +276,9 @@ def calInsulation(sizeTag):
             print("Data Loaded failed.")
 
 
-def getNOW(tag):
+def getNOW(tag, i):
     yesterday = date.today() - timedelta(1)
-    return str("site-" + tag + "-2019.4.2")
+    return str("site-" + tag + "-2019.4."+str(i))
     #return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
 
 
@@ -286,8 +286,9 @@ def runThis():
     print("starting")
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
-    for tag in json.loads(tags.text)['response']:
-        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
+    for i in range(1,25):
+        for tag in json.loads(tags.text)['response']:
+            calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=3, minute=30)
