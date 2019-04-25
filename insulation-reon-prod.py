@@ -19,7 +19,7 @@ def getDIfferenceMin(d1, d2):
 def calInsulation(sizeTag):
     print(sizeTag['tag'])
     print(sizeTag['size'])
-    print(sizeTag['name'])
+    print(sizeTag['siteName'])
     tagSite = sizeTag['tag'].split('-')[1].upper()
     print(tagSite)
     url = os.environ['es_url']
