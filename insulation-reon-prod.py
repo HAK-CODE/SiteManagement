@@ -4,9 +4,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import time
 import requests
 import os
-os.environ['es_user'] = "elastic"
-os.environ['es_pass'] = "vtxpLVlnMSGpxazuNh0YiQ31"
-os.environ['es_url'] = "https://06dcca1d13df4e6cba68aa0a4bfcf0dc.ap-southeast-1.aws.found.io:9243"
 
 
 def getDIfferenceMin(d1, d2):
@@ -203,10 +200,12 @@ def calInsulation(sizeTag):
 
     print("day energy "+str(forPrcalculation))
 
+    dateIndex = sizeTag['tag'].split('-')[-1]
+    parsedDate = datetime.strptime(dateIndex, "%Y.%m.%d")
 
 
     p90_value = requests.get(
-        url=url + "/" + tagSite + "/_search",
+        url=url + "/site-" + tagSite.lower() + "-pvalues/_search",
         auth=(os.environ['es_user'], os.environ['es_pass']),
         json={
             "_source": ["p90"],
@@ -218,8 +217,8 @@ def calInsulation(sizeTag):
                             "range": {
                                 "@timestamp": {
                                     "format": "strict_date_optional_time",
-                                    "gte": sizeTag['tag'].split('-')[-1],
-                                    "lte": sizeTag['tag'].split('-')[-1]
+                                    "gte": str(parsedDate).split(' ')[0],
+                                    "lte": str(parsedDate).split(' ')[0]
                                 }
                             }
                         }
@@ -297,8 +296,8 @@ def calInsulation(sizeTag):
 
 def getNOW(tag, i=None):
     yesterday = date.today() - timedelta(1)
-    return str("site-" + tag + "-2019.4."+str(i))
-    #return str("site-" + tag + "-2019.4.17")
+    #return str("site-" + tag + "-2019.4."+str(i))
+    return str("site-" + tag + "-2019.4.17")
     #return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
 
 
@@ -306,12 +305,12 @@ def runThis():
     print("starting")
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
-    for i in range(1,25):
-        for tag in json.loads(tags.text)['response']:
-            calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
+    # for i in range(1,25):
+    #     for tag in json.loads(tags.text)['response']:
+    #         calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
 
-    # for tag in json.loads(tags.text)['response']:
-    #     calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
+    for tag in json.loads(tags.text)['response']:
+        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=3, minute=30)
