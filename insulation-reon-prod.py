@@ -143,14 +143,14 @@ def calInsulation(sizeTag):
             if key == tagSite:
                 print(key)
                 print(value)
-                if 'EtSolar' in value[tagSite]:
-                    print("Etsolar is value is "+str(value[tagSite]['EtSolar']))
+                if 'EtSolar' in value:
+                    print("Etsolar is value is "+str(value['EtSolar']))
                     if value['EtSolar'] != 0:
-                        x1_val = value[tagSite]['EtSolar']
+                        x1_val = value['EtSolar']
                         flag_x1 = True
                         break
                 else:
-                    print("TOTAL_ENERGY value is " + str(value[tagSite]['TOTAL_ENERGY']['sum']))
+                    print("TOTAL_ENERGY value is " + str(value['TOTAL_ENERGY']['sum']))
                     if value['TOTAL_ENERGY']['sum'] != 0:
                         x1_val = value['TOTAL_ENERGY']['sum']
                         flag_x1 = True
@@ -185,14 +185,14 @@ def calInsulation(sizeTag):
             if key == tagSite:
                 print(key)
                 print(value)
-                if 'EtSolar' in value[tagSite]:
+                if 'EtSolar' in value:
                     if value['EtSolar'] != 0:
-                        x2_val = value[tagSite]['EtSolar']
+                        x2_val = value['EtSolar']
                         flag_x2 = True
                         break
                 else:
                     if value['TOTAL_ENERGY']['sum'] != 0:
-                        x2_val = value[tagSite]['TOTAL_ENERGY']['sum']
+                        x2_val = value['TOTAL_ENERGY']['sum']
                         flag_x2 = True
                         break
         if flag_x2:
