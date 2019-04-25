@@ -27,10 +27,10 @@ def calInsulation(sizeTag):
         url=url + "/" + sizeTag['tag'] + "/_search",
         auth=(os.environ['es_user'], os.environ['es_pass']),
         json={
-            "_source": [sizeTag['tag']+".2", "@timestamp"],
+            "_source": [tagSite+".2", "@timestamp"],
             "size": 10000,
             "query": {
-                "exists": {"field": sizeTag['tag']+".2"}
+                "exists": {"field": tagSite+".2"}
             },
             "sort": [
                 {"@timestamp": "asc"}
@@ -50,23 +50,25 @@ def calInsulation(sizeTag):
         prev_value = 0
         insulation = 0
         timeDiff = res['hits']['hits'][0]['_source']['@timestamp']
-        prev_value = res['hits']['hits'][0]['_source'][sizeTag['tag']]['2']
-        insulation += 0.5 * (res['hits']['hits'][0]['_source'][sizeTag['tag']]['2'] + 0) * 0
+        prev_value = res['hits']['hits'][0]['_source'][tagSite]['2']
+        insulation += 0.5 * (res['hits']['hits'][0]['_source'][tagSite]['2'] + 0) * 0
 
         for i, v in enumerate(res['hits']['hits']):
             if i + 1 <= len(res['hits']['hits']) - 1:
                 if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                     insulation += 0
                 else:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
-                prev_value = res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][tagSite]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                prev_value = res['hits']['hits'][i + 1]['_source'][tagSite]['2']
                 timeDiff = res['hits']['hits'][i + 1]['_source']['@timestamp']
                 if i + 1 == len(res['hits']['hits']) - 1:
-                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
+                    insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][tagSite]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status']
                     if getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['status'] == False:
                         insulation += 0
                     else:
-                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][sizeTag['tag']]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+                        insulation += 0.5 * (res['hits']['hits'][i + 1]['_source'][tagSite]['2'] + prev_value) * getDIfferenceMin(res['hits']['hits'][i + 1]['_source']['@timestamp'], timeDiff)['value']
+
+        print("insulation using sensor "+str(insulation))
     else:
         print("using MET-GHI")
         data = requests.post(
@@ -83,7 +85,9 @@ def calInsulation(sizeTag):
                 ]
             })
         res = json.loads(data.text)
+
         if len(res['hits']['hits']) == 0:
+            print("Length is 0")
             return
 
         _id = res['hits']['hits'][0]['_source']['@timestamp'].replace("+05:00", "")
@@ -287,12 +291,12 @@ def runThis():
     print("starting")
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
-    # for i in range(1,25):
-    #     for tag in json.loads(tags.text)['response']:
-    #         calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
+    for i in range(1,25):
+        for tag in json.loads(tags.text)['response']:
+            calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
 
-    for tag in json.loads(tags.text)['response']:
-        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
+    # for tag in json.loads(tags.text)['response']:
+    #     calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=3, minute=30)
