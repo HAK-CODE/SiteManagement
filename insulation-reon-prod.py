@@ -282,8 +282,8 @@ def calInsulation(sizeTag):
 
 def getNOW(tag, i=None):
     yesterday = date.today() - timedelta(1)
-    #return str("site-" + tag + "-2019.4."+str(i))
-    return str("site-" + tag + "-2019.4.17")
+    return str("site-" + tag + "-2019.4."+str(i))
+    #return str("site-" + tag + "-2019.4.17")
     #return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
 
 
