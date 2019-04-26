@@ -274,6 +274,7 @@ def calInsulation(sizeTag):
                               "deviation":{"value": deviation},
                               "DAY_CALCULATION": forPrcalculation,
                               "siteName": sizeTag['siteName'],
+                              "system_size": sizeTag['size'],
                               "@timestamp": _id}) + "\n")
     isIdExist = requests.get(url= url + "/" + indice + "/_doc/" + _id.replace("+", "%2B"),
                              auth=(os.environ['es_user'], os.environ['es_pass']))
@@ -288,6 +289,7 @@ def calInsulation(sizeTag):
                                            "deviation": {"value": deviation},
                                            "DAY_CALCULATION": forPrcalculation,
                                            "siteName": sizeTag['siteName'],
+                                           "system_size": sizeTag['size'],
                                            "@timestamp": _id})
         print(updateStatus.content)
     else:
@@ -304,8 +306,8 @@ def calInsulation(sizeTag):
 
 def getNOW(tag, i=None):
     yesterday = date.today() - timedelta(1)
-    #return str("site-" + tag + "-2019.4."+str(i))
-    return str("site-" + tag + "-2019.4.23")
+    return str("site-" + tag + "-2019.4."+str(i))
+    #return str("site-" + tag + "-2019.4.23")
     #return str("site-" + tag + "-" + str(yesterday.year) + "." + str(yesterday.month) + "." + str(yesterday.day))
 
 
@@ -313,12 +315,12 @@ def runThis():
     print("starting")
     tags = requests.get('https://x45k5kd3hj.execute-api.us-east-2.amazonaws.com/dev/getallsitesinsulationflag',
                          headers={'x-api-key': 'gMhamr1lYt8KEy1F0rlRd5EJq8hyjJ7s6qIPKTTv'})
-    # for i in range(16,25):
-    #     for tag in json.loads(tags.text)['response']:
-    #         calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
+    for i in range(1,25):
+        for tag in json.loads(tags.text)['response']:
+            calInsulation({"tag": getNOW(tag['tag'], i), "size": float(tag['size']), "siteName": tag['name']})
 
-    for tag in json.loads(tags.text)['response']:
-        calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
+    # for tag in json.loads(tags.text)['response']:
+    #     calInsulation({"tag": getNOW(tag['tag']), "size": float(tag['size']), "siteName": tag['name']})
 
 # sched = BackgroundScheduler()
 # sched.add_job(runThis, trigger='cron', hour=3, minute=30)
