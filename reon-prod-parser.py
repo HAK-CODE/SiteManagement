@@ -104,10 +104,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                         dictionary[key] += dictionaryBuilder(key, v)
                         dictionary['type'] = "sensor"
 
-                    dictionary['location'] = {
-                        "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
-                        "lon": objectRecieved['db']['siteConfig']['siteInfo']['siteLongitude']
-                    }
                     dictionary['Timestamp'] = data['Head']['Timestamp']
                     dictionary = {k: v for k, v in dictionary.items() if v is not None}        # remove key with None values.
                     buffDict = dictionary.copy()
@@ -116,7 +112,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     del buffDict['Timestamp']
                     type = buffDict['type']
                     del buffDict['type']
-                    es.loadData({"@timestamp": buffDict["@timestamp"], "type":type, objectRecieved['db']['siteConfig']['siteInfo']['siteTag']:buffDict})
+                    es.loadData({"@timestamp": buffDict["@timestamp"],
+                                 "type":type,
+                                  objectRecieved['db']['siteConfig']['siteInfo']['siteTag']:buffDict,
+                                 "location": {
+                                             "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
+                                             "lon": objectRecieved['db']['siteConfig']['siteInfo']['siteLongitude']
+                                 }})
 
                     CheckOldData()
 
