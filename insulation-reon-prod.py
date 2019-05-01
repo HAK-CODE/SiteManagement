@@ -4,9 +4,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import time
 import requests
 import os
-os.environ['es_user'] = "elastic"
-os.environ['es_pass'] = "vtxpLVlnMSGpxazuNh0YiQ31"
-os.environ['es_url'] = "https://06dcca1d13df4e6cba68aa0a4bfcf0dc.ap-southeast-1.aws.found.io:9243"
 
 def getDIfferenceMin(d1, d2):
     d1 = datetime.strptime(d1.replace("+05:00", ""), "%Y-%m-%dT%H:%M:%S")
