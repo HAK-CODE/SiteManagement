@@ -114,6 +114,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     del buffDict['type']
                     es.loadData({"@timestamp": buffDict["@timestamp"],
                                  "type":type,
+                                 "siteName": objectRecieved['db']['siteConfig']['siteInfo']['siteName'],
                                   objectRecieved['db']['siteConfig']['siteInfo']['siteTag']:buffDict,
                                  "location": {
                                              "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
