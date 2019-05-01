@@ -104,6 +104,10 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                         dictionary[key] += dictionaryBuilder(key, v)
                         dictionary['type'] = "sensor"
 
+                    dictionary['location'] = {
+                        "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
+                        "lon": objectRecieved['db']['siteConfig']['siteInfo']['siteLongitude']
+                    }
                     dictionary['Timestamp'] = data['Head']['Timestamp']
                     dictionary = {k: v for k, v in dictionary.items() if v is not None}        # remove key with None values.
                     buffDict = dictionary.copy()
@@ -175,6 +179,10 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     innerDict = {}
                     builder['@timestamp'] = index
                     builder['type'] = "logger"
+                    builder['location'] = {
+                        "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
+                        "lon": objectRecieved['db']['siteConfig']['siteInfo']['siteLongitude']
+                    }
                     builder['siteTag'] = objectRecieved['db']['siteConfig']['siteInfo']['siteTag']
                     for k, v in j.iteritems():
                         if type(v) is int or type(v) is float or v is None and v is not np.nan:
