@@ -201,6 +201,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     builder[objectRecieved['db']['siteConfig']['siteInfo']['siteTag']] = innerDict
                     builder['siteName'] = objectRecieved['db']['siteConfig']['siteInfo']['siteName']
                     save.append(builder)
+
+                print("Site location")
+                print(builder['location'])
                 es.loadData(save)
 
                 df_final.set_index('TIMESTAMP', inplace=True)
