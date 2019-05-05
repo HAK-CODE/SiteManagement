@@ -35,8 +35,10 @@ if ioCheck.isFileRelease():
 del ioCheck
 
 if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
-    shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
-
+    s3 = s3service.S3(key=objectRecieved['fileReceived'],
+                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3.send()
+    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
 def dictionaryBuilder(key, v):
     if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
@@ -261,8 +263,5 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
                                 serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         ftpObj.sendFTP()
-
-        s3 = s3service.S3(key=objectRecieved['fileReceived'], path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-        s3.send()
 
 os.remove(objectRecieved['fileReceived'])
