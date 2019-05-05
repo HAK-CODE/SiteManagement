@@ -113,9 +113,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     type = buffDict['type']
                     del buffDict['type']
                     es.loadData({"@timestamp": buffDict["@timestamp"],
-                                 "type":type,
+                                 "type": type,
                                  "siteName": objectRecieved['db']['siteConfig']['siteInfo']['siteName'],
-                                  objectRecieved['db']['siteConfig']['siteInfo']['siteTag']:buffDict,
+                                 "logger": buffDict,
                                  "location": {
                                              "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
                                              "lon": objectRecieved['db']['siteConfig']['siteInfo']['siteLongitude']
@@ -198,7 +198,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 if objectRecieved['db']['siteConfig']['csv'][k]['applyOperation']:
                                     v = (v / objectRecieved['db']['siteConfig']['csv'][k]['multiplier']) + objectRecieved['db']['siteConfig']['csv'][k]['offset']
                             innerDict[k] = v
-                    builder[objectRecieved['db']['siteConfig']['siteInfo']['siteTag']] = innerDict
+                    builder['logger'] = innerDict
                     builder['siteName'] = objectRecieved['db']['siteConfig']['siteInfo']['siteName']
                     save.append(builder)
 
