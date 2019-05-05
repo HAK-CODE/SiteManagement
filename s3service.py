@@ -1,6 +1,6 @@
 import boto3
 import ntpath
-bucketName = "reon-archival"
+bucketName = "reon-historian"
 import datetime
 
 class S3:
