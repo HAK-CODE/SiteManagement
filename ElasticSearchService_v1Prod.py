@@ -60,7 +60,7 @@ class ElasticSearchService:
                     buffer = ""
                     self.indexPattern['index']['_index'] = indiceStatus[1]
                     self.indexPattern['index']['_id'] = stream['@timestamp']
-                    typeData = stream['siteTag']
+                    typeData = stream['type']
                     del stream['type']
                     buffer += str(json.dumps(self.indexPattern) + "\n")
                     buffer += str(json.dumps(stream) + '\n')
@@ -71,7 +71,7 @@ class ElasticSearchService:
                         updateStatus = requests.post(url=self.url + "/" + indiceStatus[1] + "/_doc/" + stream['@timestamp'].replace("+","%2B") + "/_update",
                                                      auth=(os.environ['es_user'], os.environ['es_pass']),
                                                      headers={"content-type": "application/json"},
-                                                     json={"doc": {"logger": stream['logger']}})
+                                                     json={"doc": {typeData: stream[typeData]}})
                         print(updateStatus.content)
                     else:
                         newData = requests.put(url=self.url + "/" + self.index + "/_doc/_bulk",
