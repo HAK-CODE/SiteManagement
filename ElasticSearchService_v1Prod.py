@@ -71,7 +71,7 @@ class ElasticSearchService:
                         updateStatus = requests.post(url=self.url + "/" + indiceStatus[1] + "/_doc/" + stream['@timestamp'].replace("+","%2B") + "/_update",
                                                      auth=(os.environ['es_user'], os.environ['es_pass']),
                                                      headers={"content-type": "application/json"},
-                                                     json={"doc": {typeData: stream[typeData]}})
+                                                     json={"doc": {"logger": stream['logger']}})
                         print(updateStatus.content)
                     else:
                         newData = requests.put(url=self.url + "/" + self.index + "/_doc/_bulk",
