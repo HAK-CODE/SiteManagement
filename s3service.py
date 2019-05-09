@@ -10,6 +10,8 @@ class S3:
 
     def send(self):
         s3 = boto3.client('s3')
+        print(self.key)
+        print(self.path)
         folder = str(datetime.datetime.now()).split(' ')[0]
         response = s3.upload_file(self.key, bucketName, str(self.path).replace('/','')+"/"+folder+"/"+ntpath.basename(self.key))
         print(response)
