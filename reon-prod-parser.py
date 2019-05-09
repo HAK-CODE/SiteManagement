@@ -35,6 +35,8 @@ if ioCheck.isFileRelease():
 del ioCheck
 
 if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
+    print(objectRecieved['fileReceived'])
+    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
     s3 = s3service.S3(key=objectRecieved['fileReceived'],
                       path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
     s3.send()
