@@ -118,7 +118,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     del buffDict['type']
                     print("type "+str(type))
                     es.loadData({"@timestamp": buffDict["@timestamp"],
-                                 "type": type,
+                                 "type": "logger",
                                  "siteName": objectRecieved['db']['siteConfig']['siteInfo']['siteName'],
                                  "logger": buffDict,
                                  "location": {
