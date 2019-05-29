@@ -26,6 +26,7 @@ class ElasticSearchService:
                 self.indexPattern['index']['_id'] = data['@timestamp']
                 print(self.indexPattern)
                 typeData = data['type']
+                print("Type of data "+str(typeData))
                 del data['type']
                 buffer += str(json.dumps(self.indexPattern) + "\n")
                 buffer += str(json.dumps(data) + '\n')
