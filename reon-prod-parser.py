@@ -267,8 +267,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         else:
             print('cache cleared failed')
 
-        ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
-                                serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-        ftpObj.sendFTP()
+        # ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
+        #                         serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+        # ftpObj.sendFTP()
 
 os.remove(objectRecieved['fileReceived'])
