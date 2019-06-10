@@ -12,7 +12,7 @@ while True:
     user = "reonenergy"
     password = "@Reonenergy92"
     source = "/ALUCAN/ZL3"
-    destination = "/home/hak/Downloads/files"
+    destination = "/home/ubuntu/ALUCAN"
     interval = 0.05
 
     ftp = ftplib.FTP_TLS(host='ftpreonenergy.qosenergy.com',
@@ -27,7 +27,6 @@ while True:
         print("Error: could not change to ")
         sys.exit("Ending Application")
     filelist = ftp.nlst()
-    print(filelist)
     for file in filelist:
         if "log" in file and ".csv" in file:
             ftp.retrbinary("RETR " + file, open(os.path.join(destination, file), "wb").write)
