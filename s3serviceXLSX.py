@@ -15,6 +15,10 @@ class S3:
         folder = str(datetime.datetime.now()).split(' ')[0]
         if str(self.path).startswith('/'):
             self.path = str(self.path[1:])
-        response = s3.upload_file(self.key, bucketName, str(self.path)+"/"+folder+"/"+ntpath.basename(self.key))
+
+        newkey=(self.key).replace('(','_')
+        newkey = newkey.replace(')','')
+        newkey = newkey.replace(' ','')
+        response = s3.upload_file(self.key, bucketName, str(self.path)+"/"+folder+"/"+ntpath.basename(newkey))
         print(response)
         return
