@@ -193,10 +193,11 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         missing.append(col[i])
                 col = list(filter(lambda x: x not in missing, col))
                 print(col)
-                df_final = df[col].copy()
+
 
                 df['TIMESTAMP'] = pd.to_datetime(df.TIMESTAMP, format='%d/%m/%Y %H:%M:%S')
                 df['TIMESTAMP'] = df['TIMESTAMP'].dt.strftime('%Y-%m-%dT%H:%M:%S+05:00')
+                df_final = df[col].copy()
                 df.set_index('TIMESTAMP', inplace=True)
                 save = []
                 for index, j in df.iterrows():
