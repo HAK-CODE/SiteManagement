@@ -24,7 +24,7 @@ import numpy as np
 
 ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
-objectRecieved['fileReceived']=objectRecieved['fileReceived'].replace('"','')
+objectRecieved['fileReceived'] = objectRecieved['fileReceived'].replace('"','')
 ioCheck.setFile(objectRecieved['fileReceived'])
 
 if ioCheck.isFileRelease():
@@ -36,13 +36,8 @@ if ioCheck.isFileRelease():
         sys.exit(0)
 del ioCheck
 
-if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
-    print(objectRecieved['fileReceived'])
-    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3 = s3service.S3(key=objectRecieved['fileReceived'],
-                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3.send()
-    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
+
+
 
 def dictionaryBuilder(key, v):
     if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
@@ -277,5 +272,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         # ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
         #                         serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         # ftpObj.sendFTP()
+
+if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
+    print(objectRecieved['fileReceived'])
+    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3 = s3service.S3(key=objectRecieved['fileReceived'],
+                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3.send()
+    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
 # os.remove(objectRecieved['fileReceived'])
