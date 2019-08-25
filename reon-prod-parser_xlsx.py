@@ -278,4 +278,4 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         #                         serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         # ftpObj.sendFTP()
 
-os.remove(objectRecieved['fileReceived'])
+# os.remove(objectRecieved['fileReceived'])
