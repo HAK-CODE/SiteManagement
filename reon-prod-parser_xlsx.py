@@ -27,6 +27,14 @@ objectRecieved = ast.literal_eval(sys.argv[1])
 objectRecieved['fileReceived'] = objectRecieved['fileReceived'].replace('"','')
 ioCheck.setFile(objectRecieved['fileReceived'])
 
+if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
+    print(objectRecieved['fileReceived'])
+    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3 = s3service.S3(key=objectRecieved['fileReceived'],
+                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3.send()
+    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
+
 if ioCheck.isFileRelease():
     if os.path.getsize(objectRecieved['fileReceived']) == 0:
         print('0 BYTE FILE.')
@@ -35,9 +43,6 @@ if ioCheck.isFileRelease():
         ftpObj.sendFTP()
         sys.exit(0)
 del ioCheck
-
-
-
 
 def dictionaryBuilder(key, v):
     if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
@@ -154,6 +159,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
             elif '.csv' in ntpath.basename(objectRecieved['fileReceived']) or '.xlsx' in ntpath.basename(objectRecieved['fileReceived']):
                 # es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'], isMultipleTS=True)
+                print("PATH------------")
                 print(objectRecieved['fileReceived'])
                 if '.xlsx' in ntpath.basename(objectRecieved['fileReceived']):
                     df = pd.read_excel(objectRecieved['fileReceived'], sheet_name='Collective Report')
@@ -272,13 +278,5 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         # ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
         #                         serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         # ftpObj.sendFTP()
-
-if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
-    print(objectRecieved['fileReceived'])
-    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3 = s3service.S3(key=objectRecieved['fileReceived'],
-                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3.send()
-    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
 # os.remove(objectRecieved['fileReceived'])
