@@ -196,7 +196,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
 
                 df['TIMESTAMP'] = pd.to_datetime(df.TIMESTAMP, format='%d/%m/%Y %H:%M:%S')
-                df['TIMESTAMP'] = df['TIMESTAMP'].dt.strftime('%Y-%m-%d %H:%M:%S')
+                df['TIMESTAMP'] = df['TIMESTAMP'].dt.strftime('%d-%m-%Y %H:%M:%S')
                 df_final = df[col].copy()
                 df.set_index('TIMESTAMP', inplace=True)
                 save = []
