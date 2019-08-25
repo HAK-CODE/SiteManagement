@@ -176,10 +176,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 df.dropna(axis='columns', inplace=True)
 
                 if 'date_time' in df.columns or 'timestamp' in df.columns or 'TimeStamp' in df.columns or 'Time Stamp' in df.columns:
+                    print("in if rename")
                     df.rename(columns={"date_time": "TIMESTAMP"}, inplace=True)
                     df.rename(columns={"timestamp": "TIMESTAMP"}, inplace=True)
                     df.rename(columns={"TimeStamp": "TIMESTAMP"}, inplace=True)
                     df.rename(columns={"Time Stamp": "TIMESTAMP"}, inplace=True)
+
+                print(str("TIMESTAMP" in df.columns))
 
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
                 missing = []
