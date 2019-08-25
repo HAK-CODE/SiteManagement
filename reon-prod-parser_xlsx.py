@@ -169,7 +169,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                      header=0,
                                      engine='python')
 
-                print(df.columns)
 
                 df = df.loc[:, ~df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
@@ -182,9 +181,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     df.rename(columns={"TimeStamp": "TIMESTAMP"}, inplace=True)
                     df.rename(columns={"Time Stamp": "TIMESTAMP"}, inplace=True)
 
-                print(str("TIMESTAMP" in df.columns))
-
-                print(df["TIMESTAMP"])
 
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
                 missing = []
@@ -192,7 +188,6 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     if col[i] not in df.columns:
                         missing.append(col[i])
                 col = list(filter(lambda x: x not in missing, col))
-                print(col)
 
 
                 df['TIMESTAMP'] = pd.to_datetime(df.TIMESTAMP, format='%d/%m/%Y %H:%M:%S')
@@ -225,14 +220,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     builder['siteName'] = objectRecieved['db']['siteConfig']['siteInfo']['siteName']
                     save.append(builder)
 
-                print("Site location")
-                print(builder['location'])
-                # es.loadData(save)
-
                 df_final.set_index('TIMESTAMP', inplace=True)
 
-
-                print(df_final)
                 receiveTime = time.ctime(os.path.getctime(objectRecieved['fileReceived']))
                 filename = ntpath.basename(objectRecieved['fileReceived'])
                 col.remove('TIMESTAMP')
