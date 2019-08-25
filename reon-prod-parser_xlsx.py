@@ -161,6 +161,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                 # es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'], isMultipleTS=True)
 
                 if '.xlsx' in ntpath.basename(objectRecieved['fileReceived']):
+                    print(objectRecieved['fileReceived'])
                     df = pd.read_excel(objectRecieved['fileReceived'], sheet_name='Collective Report')
                 else:
                     df = pd.read_csv(objectRecieved['fileReceived'],
