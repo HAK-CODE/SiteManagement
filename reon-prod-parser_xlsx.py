@@ -159,9 +159,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
             elif '.csv' in ntpath.basename(objectRecieved['fileReceived']) or '.xlsx' in ntpath.basename(objectRecieved['fileReceived']):
                 # es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'], isMultipleTS=True)
-
+                print(objectRecieved['fileReceived'])
                 if '.xlsx' in ntpath.basename(objectRecieved['fileReceived']):
-                    print(objectRecieved['fileReceived'])
                     df = pd.read_excel(objectRecieved['fileReceived'], sheet_name='Collective Report')
                 else:
                     df = pd.read_csv(objectRecieved['fileReceived'],
