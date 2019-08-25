@@ -184,6 +184,8 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
                 print(str("TIMESTAMP" in df.columns))
 
+                print(df["TIMESTAMP"])
+
                 col = objectRecieved['db']['siteConfig']['csv']['csvCols']
                 missing = []
                 for i, j in enumerate(col):
