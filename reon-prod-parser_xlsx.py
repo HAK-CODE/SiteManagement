@@ -10,7 +10,7 @@ import os
 from Config import predixConnection
 import datetime
 from fileRelease import IOoperation
-import s3serviceXLSX as s3service
+import s3service as s3service
 import requests
 import ftpService
 import shutil
@@ -27,13 +27,6 @@ objectRecieved = ast.literal_eval(sys.argv[1])
 objectRecieved['fileReceived'] = objectRecieved['fileReceived'].replace('"','')
 ioCheck.setFile(objectRecieved['fileReceived'])
 
-if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
-    print(objectRecieved['fileReceived'])
-    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3 = s3service.S3(key=objectRecieved['fileReceived'],
-                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3.send()
-    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
 if ioCheck.isFileRelease():
     if os.path.getsize(objectRecieved['fileReceived']) == 0:
@@ -270,6 +263,13 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         else:
             print('cache cleared failed')
 
+        if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
+            print(objectRecieved['fileReceived'])
+            print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+            s3 = s3service.S3(key=objectRecieved['fileReceived'],
+                            path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+            s3.send()
+    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
         # ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
         #                         serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
         # ftpObj.sendFTP()

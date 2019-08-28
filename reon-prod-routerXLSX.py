@@ -47,4 +47,4 @@ if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
     #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
 
-os.remove(objectRecieved['fileReceived'])
+#os.remove(objectRecieved['fileReceived'])
