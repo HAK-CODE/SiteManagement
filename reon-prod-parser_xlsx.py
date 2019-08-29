@@ -9,7 +9,7 @@ import time
 import os
 from Config import predixConnection
 import datetime
-from fileRelease import IOoperation
+from fileReleaseXLSX import IOoperation
 import s3service as s3service
 import requests
 import ftpService

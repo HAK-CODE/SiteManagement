@@ -6,7 +6,7 @@ class IOoperation:
     FILENAME = None
     FILESIZE = None
     COUNT = 2
-    SLEEP = 5
+    SLEEP = 3
 
     def setFile(self, FILENAME):
         if os.path.isfile(FILENAME):
