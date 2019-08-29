@@ -87,7 +87,7 @@ class ElasticSearchService:
 
     def indiceController(self, date):
         extractdata = dateutil.parser.parse(date).date()
-        indice = "site-"+str(self.index).lower()+str("-")+str(extractdata.year)+"."+str(extractdata.month)
+        indice = "site-"+str(self.index).lower()+str("-")+str(extractdata.year)
         isCreated = requests.get(url=self.url+"/"+indice, auth=(os.environ['es_user'], os.environ['es_pass']))
         print("indice pattern is "+indice)
         if isCreated.status_code != 200:
