@@ -1,6 +1,8 @@
 '''
 author: HAK
 time  : 03:00 AM, 07/11/2017
+eidted by M.Faizan
+01/09/2019
 '''
 
 import json
@@ -53,22 +55,6 @@ def dictionaryBuilder(key, v):
 
     return v
 
-
-def CheckOldData():
-    try:
-        with open("DefaultDataStore/Default_Store.csv", "r") as file:
-            lines = file.readlines()
-        for i in lines:
-            data = i.split(";")
-            predixConnection.timeSeries.queue(data[0], value=data[1], timestamp=data[2].replace('\n', ''))
-            predixConnection.timeSeries.send()
-            print(data)
-        os.remove("DefaultDataStore/Default_Store.csv")
-    except Exception:
-        print("No Internet :(")
-        print("Old Data Not Found! :)")
-
-
 if os.path.getsize(objectRecieved['fileReceived']) != 0:
     validation = None
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
@@ -116,6 +102,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     del buffDict['Timestamp']
                     type = buffDict['type']
                     del buffDict['type']
+                    '''
                     es.loadData({"@timestamp": buffDict["@timestamp"],
                                  "type": "logger",
                                  "siteName": objectRecieved['db']['siteConfig']['siteInfo']['siteName'],
@@ -123,9 +110,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                  "location": {
                                              "lat": objectRecieved['db']['siteConfig']['siteInfo']['siteLatitude'],
                                              "lon": objectRecieved['db']['siteConfig']['siteInfo']['siteLongitude']
-                                 }})
+                                 }})'''
 
-                    CheckOldData()
+                    
 
                     if validation is None or validation is True:
                         if 'DAY_ENERGY' in dictionary:
@@ -234,7 +221,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     except Exception:
                         print("column dropped on filtration.")
 
-                CheckOldData()
+                
 
                 timeStamp = df_final.index.astype(str).str.replace('/', '-')
                 print(df_final)
@@ -267,8 +254,16 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         else:
             print('cache cleared failed')
 
-        ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
-                                serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-        ftpObj.sendFTP()
+        #ftpObj = ftpService.FTP(filePath=objectRecieved['fileReceived'],
+        #                        serverPath=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+        #ftpObj.sendFTP()
+
+if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
+    print(objectRecieved['fileReceived'])
+    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3 = s3service.S3(key=objectRecieved['fileReceived'],
+                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
+    s3.send()
+    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
 
 os.remove(objectRecieved['fileReceived'])
