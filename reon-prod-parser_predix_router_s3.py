@@ -17,7 +17,7 @@ import ftpService
 import shutil
 import ast
 from colorama import Fore
-from ElasticSearchService_v1Prod import ElasticSearchService as es
+#from ElasticSearchService_v1Prod import ElasticSearchService as es
 import pandas as pd
 import ntpath
 import s3service
@@ -60,7 +60,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
     if objectRecieved['db']['siteConfig']['siteInfo']['siteDeployed'] is True:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and (len(objectRecieved['db']['siteConfig']['js']) or len(objectRecieved['db']['siteConfig']['csv'])) != 0:
             if '.js' in ntpath.basename(objectRecieved['fileReceived']):
-                es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'])
+                #es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'])
                 if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or os.path.basename(objectRecieved['fileReceived']).startswith('METER') or os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
                     data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
                     dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
@@ -143,7 +143,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                 file.write(objectRecieved['db']['siteConfig']['js'][k]['tag'] + ";" + str(v) + ";" + str(unixTimeStamp * 1000) + "\n")
 
             elif '.csv' in ntpath.basename(objectRecieved['fileReceived']):
-                es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'], isMultipleTS=True)
+                #es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'], isMultipleTS=True)
                 df = pd.read_csv(objectRecieved['fileReceived'],
                                  sep='\s*,\s*',
                                  header=0,
