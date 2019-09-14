@@ -36,14 +36,6 @@ if ioCheck.isFileRelease():
         sys.exit(0)
 del ioCheck
 
-if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
-    print(objectRecieved['fileReceived'])
-    print(objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3 = s3service.S3(key=objectRecieved['fileReceived'],
-                      path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
-    s3.send()
-    #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
-
 def dictionaryBuilder(key, v):
     if objectRecieved['db']['siteConfig']['js'][key]['applyChecks']:
         if objectRecieved['db']['siteConfig']['js'][key]['minCheckApply']:
