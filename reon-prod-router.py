@@ -3,23 +3,23 @@ author: HAK
 time  : 03:00 AM, 07/11/2017
 '''
 
-import json
+#import json
 import sys
 import time
 import os
-from Config import predixConnection
-import datetime
+#from Config import predixConnection
+#import datetime
 from fileRelease import IOoperation
-import requests
-import ftpService
-import shutil
+#import requests
+#import ftpService
+#import shutil
 import ast
 from colorama import Fore
 from ElasticSearchService_v1Prod import ElasticSearchService as es
-import pandas as pd
+#import pandas as pd
 import ntpath
 import s3service
-import numpy as np
+#import numpy as np
 
 ioCheck = IOoperation()
 objectRecieved = ast.literal_eval(sys.argv[1])
@@ -39,6 +39,6 @@ if objectRecieved['db']['siteConfig']['siteInfo']['storeFiles']:
                       path=objectRecieved['db']['siteConfig']['siteInfo']['FTPpath'])
     s3.send()
     #shutil.copy(objectRecieved['fileReceived'], objectRecieved['db']['siteConfig']['siteInfo']['siteFilesStorage'])
-
+    #time.sleep(1)
 
 os.remove(objectRecieved['fileReceived'])
