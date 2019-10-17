@@ -53,10 +53,10 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
         if os.path.splitext(objectRecieved['fileReceived'])[-1] and (len(objectRecieved['db']['siteConfig']['js']) or len(objectRecieved['db']['siteConfig']['csv'])) != 0:
             if '.js' in ntpath.basename(objectRecieved['fileReceived']):
                 #es = es(index=objectRecieved['db']['siteConfig']['siteInfo']['siteTag'])
-                if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or os.path.basename(objectRecieved['fileReceived']).startswith('METER') or os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
+                if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or os.path.basename(objectRecieved['fileReceived']).startswith('inverter')or os.path.basename(objectRecieved['fileReceived']).startswith('METER') or os.path.basename(objectRecieved['fileReceived']).startswith('SENSOR'):
                     data = json.load(open(objectRecieved['fileReceived'], encoding='ISO-8859-1', mode='r'))
                     dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
-                    if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER'):
+                    if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or os.path.basename(objectRecieved['fileReceived']).startswith('inverter'):
                         validation = False
                         for key, value in dictionary.items():
                             if key in data['Body']:
