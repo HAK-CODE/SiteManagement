@@ -58,10 +58,11 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                     dictionary = {x: None for x in objectRecieved['db']['siteConfig']['js']['jsCols']}
                     if os.path.basename(objectRecieved['fileReceived']).startswith('INVERTER') or os.path.basename(objectRecieved['fileReceived']).startswith('inverter'):
                         validation = False
+                        garbage_energy=0
                         for key, value in dictionary.items():
                             if key in data['Body']:
                                 if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity'] or key == 'PAC':
-                                    garbage_energy=0
+                                    
                                     dictionary[key] = {}
                                     dictionary[key]['sum'] = 0
                                     validation = True
@@ -72,10 +73,10 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                         else:
                                             garbage_energy = 1
 
-                                    if (garbage_energy==1):
-                                        del dictionary['TOTAL_ENERGY']
-                                        del dictionary['YEAR_ENERGY']
-                                        del dictionary['DAY_ENERGY']
+                        if (garbage_energy==1):
+                            del dictionary['TOTAL_ENERGY']
+                            del dictionary['YEAR_ENERGY']
+                            del dictionary['DAY_ENERGY']
 
 
                                     
