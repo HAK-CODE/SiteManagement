@@ -81,7 +81,7 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
 
                                     
 
-                                    print (dictionary)
+                        print (dictionary)
                         dictionary['type'] = "inverter"
 
                     elif os.path.basename(objectRecieved['fileReceived']).startswith('METER'):
