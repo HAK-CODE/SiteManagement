@@ -73,9 +73,9 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                                             garbage_energy = 1
 
                                     if (garbage_energy==1):
-                                        del dictionary[key]['TOTAL_ENERGY']
-                                        del dictionary[key]['YEAR_ENERGY']
-                                        del dictionary[key]['DAY_ENERGY']
+                                        del dictionary['TOTAL_ENERGY']
+                                        del dictionary['YEAR_ENERGY']
+                                        del dictionary['DAY_ENERGY']
 
 
                                     
