@@ -61,13 +61,24 @@ if os.path.getsize(objectRecieved['fileReceived']) != 0:
                         for key, value in dictionary.items():
                             if key in data['Body']:
                                 if len(data['Body'][key]['Values'].keys()) == objectRecieved['db']['siteConfig']['siteInfo']['siteInverterQuantity'] or key == 'PAC':
+                                    garbage_energy=0
                                     dictionary[key] = {}
                                     dictionary[key]['sum'] = 0
                                     validation = True
                                     for k, v in data['Body'][key]['Values'].items():
                                         dictionary[key][k] = dictionaryBuilder(key, v)
-                                        if (('ENERGY' in key and dictionaryBuilder(key, v)!=0) or key):
+                                        if (('ENERGY' in key and dictionaryBuilder(key, v)!=0) or key=='PAC'):
                                             dictionary[key]['sum'] += dictionaryBuilder(key, v)
+                                        else:
+                                            garbage_energy = 1
+
+                                    if (garbage_energy==1):
+                                        del dictionary[key]['TOTAL_ENERGY']
+                                        del dictionary[key]['YEAR_ENERGY']
+                                        del dictionary[key]['DAY_ENERGY']
+
+
+                                    
 
                                     print (dictionary)
                         dictionary['type'] = "inverter"
